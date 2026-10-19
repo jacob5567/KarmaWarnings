@@ -20,7 +20,7 @@ You aim at the portal. Where a portal is matched by the stage it leads to, any e
 |---|---|
 | Void Fields: starting and finishing the cells | The Null Portal |
 | Gilded Coast: can't leave until Aurelionite dies | The Gold Portal |
-| Bulwark's Ambry: can't leave until the trial ends | The Sky Meadow portal-dialer laptop, or the Ambry portal |
+| Bulwark's Ambry: can't leave until the trial ends | The Ambry portal, which leads to Bulwark's Ambry or one of its Seekers of the Storm variants (Aphelian, Tar or Wisp Research). The mod also checks the portal's destination whenever it can be read. |
 | Soulbound Threshold: kill the Anima Harvester or die to leave | The Ritual Portal. Not shown once the Reaper is beaten. |
 | Terminal Lucidity: killing the Echo of Providence | The Veil of Memory portal |
 | Neural Sanctum: killing the Solus Heart | The Decrypted Portal (DLC3) |
@@ -35,7 +35,6 @@ You aim at the object.
 | Message | Scenario |
 |---|---|
 | Surviving the catastrophe teleporter | An unused Shrine of Descent, or a teleporter that is about to be a catastrophe teleporter (the shrine has been used and it isn't charged yet). Also shown after the Reaper is beaten. |
-| Gilded Coast: can't leave until Aurelionite dies | An unused Altar of Gold |
 | Opening this Legendary Chest | An unopened preplaced Legendary Chest in Abyssal Depths, Sundered Grove or Repurposed Crater. A chest the game spawns elsewhere doesn't count. |
 | Fully draining this shrine and killing the Halcyonite | A Halcyon Shrine that hasn't started draining (DLC2) |
 | Interact again before it fills to avoid Karma | A Halcyon Shrine that is draining. This is the only message shown **without** the "Increases Karma" headline, because it's advice. |
@@ -80,6 +79,7 @@ The message is **Gives you …** followed by the phrases that apply, joined with
 
 ## Not warned about
 
+- The Altar of Gold, and the portal dialer on Sky Meadow and Helminth Hatchery (the Compound Generator and its laptop): using them only opens a portal, and the portal is what commits you.
 - The Obelisk in A Moment, Fractured: the run ends right after.
 - Item thresholds crossed by monsters or drones, such as with Artifact of Evolution.
 - An open item-choice panel (Command, Void potentials), a ready CHEF meal, and items still falling out of a chest. These aren't covered yet.

@@ -3,7 +3,8 @@ using RoR2;
 namespace KarmaWarnings
 {
     // Warns while the player aims at an interactable whose use commits them to a Karma milestone: the Shrine of Descent,
-    // the Altar of Gold, the hidden Legendary Chests, and the Halcyon Shrine.
+    // the hidden Legendary Chests, and the Halcyon Shrine. The Altar of Gold isn't one: the commitment is taking the
+    // portal it opens (PortalDetector), so the altar gets no warning.
     internal sealed class InteractableDetector : IWarningDetector
     {
         private const string GoldChestName = "GOLDCHEST_NAME";
@@ -19,7 +20,6 @@ namespace KarmaWarnings
         private const string CatastropheText = "Surviving the catastrophe teleporter";
 
         private static readonly string[] CatastropheIds = { KarmaTriggers.SurviveMajorCatastrophe };
-        private static readonly string[] AltarIds = { KarmaTriggers.DefeatAurelionite };
         private static readonly string[] ChestIds = { KarmaTriggers.OpenHiddenGoldChest };
         private static readonly string[] HalcyonIds = { KarmaTriggers.CompleteHalcyonShrine };
 
@@ -39,12 +39,6 @@ namespace KarmaWarnings
             if (target.Teleporter && !target.Teleporter.isCharged && IsCatastropheTeleporter())
             {
                 return context.TryMake(CatastropheText, WarningPriority.Stage, CatastropheIds, false, out warning);
-            }
-
-            if (target.Statue && target.Statue.portalType == PortalStatueBehavior.PortalType.Goldshores && IsAvailable(target))
-            {
-                return context.TryMake("Gilded Coast: can't leave until Aurelionite dies",
-                    WarningPriority.Stage, AltarIds, false, out warning);
             }
 
             if (IsHiddenChest(context) && IsAvailable(target))

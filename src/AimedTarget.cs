@@ -14,7 +14,6 @@ namespace KarmaWarnings
         public SceneExitController Exit;
         public ShrineCatastropheBehavior Descent;
         public HalcyoniteShrineInteractable Halcyon;
-        public PortalStatueBehavior Statue;
         public GenericPickupController Pickup;
         public ShopTerminalBehavior Shop;
         public TeleporterInteraction Teleporter;
@@ -34,7 +33,6 @@ namespace KarmaWarnings
             Exit = Find<SceneExitController>(aimed);
             Descent = Find<ShrineCatastropheBehavior>(aimed);
             Halcyon = Find<HalcyoniteShrineInteractable>(aimed);
-            Statue = Find<PortalStatueBehavior>(aimed);
             Pickup = Find<GenericPickupController>(aimed);
             Shop = Find<ShopTerminalBehavior>(aimed);
             Teleporter = Find<TeleporterInteraction>(aimed);

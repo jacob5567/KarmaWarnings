@@ -6,6 +6,8 @@ namespace KarmaWarnings
     // Warns while the player aims at a portal that leads to a stage they can't leave without a Karma milestone, and at
     // any exit from the last stage of a loop.
     //
+    // The portal dialer on Sky Meadow and Helminth Hatchery (the Compound Generator and its laptop) gets no warning:
+    // only the portal it opens is a commitment.
     // A portal is told apart by its context token, or by the stage it leads to when that is part of the prefab. Portals
     // whose destination the server sets at runtime (Soulbound Threshold, Bulwark's Ambry, Terminal Lucidity) can only be
     // matched by token. Run.nextStageScene is not synced to clients, so it is never read.
@@ -15,6 +17,13 @@ namespace KarmaWarnings
         {
             public readonly string Text;
             public readonly string[] Ids;
+            // When set, a token match also needs the object's name to start with this. Some other objects reuse a portal's
+            // prompt text: the DLC4 trial scenes' "RiftIdle" has the Ambry portal's.
+            public string RequiredObjectName;
+            // When set, and the portal's destination can be read, it has to be one of these stages. The server sets a
+            // dialer portal's destination after spawning it, so a client usually sees the prefab's default instead, and
+            // when nothing is set the object name above is all there is to go on.
+            public string[] AllowedDestinations;
 
             public Row(string text, params string[] ids)
             {
@@ -27,8 +36,15 @@ namespace KarmaWarnings
             KarmaTriggers.EnterArena, KarmaTriggers.CompletedArena);
         private static readonly Row GildedCoast = new Row("Gilded Coast: can't leave until Aurelionite dies",
             KarmaTriggers.DefeatAurelionite);
+        // Bulwark's Ambry and its three Seekers of the Storm variants (Aphelian, Tar and Wisp Research).
+        private static readonly string[] AmbryStages = { "artifactworld", "artifactworld01", "artifactworld02", "artifactworld03" };
+
         private static readonly Row Ambry = new Row("Bulwark's Ambry: can't leave until the trial ends",
-            KarmaTriggers.ArtifactWorldComplete);
+            KarmaTriggers.ArtifactWorldComplete)
+        {
+            RequiredObjectName = "PortalArtifactworld",
+            AllowedDestinations = AmbryStages
+        };
         private static readonly Row Threshold = new Row("Soulbound Threshold: kill the Anima Harvester or die to leave",
             KarmaTriggers.BeatChampRushReaper);
         private static readonly Row Lucidity = new Row("Terminal Lucidity: killing the Echo of Providence",
@@ -45,26 +61,31 @@ namespace KarmaWarnings
             { "PORTAL_ARENA_CONTEXT", Arena },
             { "PORTAL_GOLDSHORES_CONTEXT", GildedCoast },
             { "PORTAL_ARTIFACTWORLD_CONTEXT", Ambry },
-            { "PORTAL_DIALER_LAPTOP_CONTEXT", Ambry },
             { "PORTAL_CHAMP_RUSH_CONTEXT", Threshold },
             { "PORTAL_ULTIMA_CONTEXT", Lucidity },
             { "PORTAL_SOLUSWEB_CONTEXT", NeuralSanctum }
         };
 
-        private static readonly Dictionary<string, Row> ByDestination = new Dictionary<string, Row>
+        private static readonly Dictionary<string, Row> ByDestination = BuildByDestination();
+
+        private static Dictionary<string, Row> BuildByDestination()
         {
-            { "arena", Arena },
-            { "goldshores", GildedCoast },
-            { "artifactworld", Ambry },
-            { "artifactworld01", Ambry },
-            { "artifactworld02", Ambry },
-            { "artifactworld03", Ambry },
-            { "champrush", Threshold },
-            { "ultima", Lucidity },
-            { "solusweb", NeuralSanctum },
-            { "solutionalhaunt", SolutionalHaunt },
-            { "meridian", Meridian }
-        };
+            Dictionary<string, Row> byDestination = new Dictionary<string, Row>
+            {
+                { "arena", Arena },
+                { "goldshores", GildedCoast },
+                { "champrush", Threshold },
+                { "ultima", Lucidity },
+                { "solusweb", NeuralSanctum },
+                { "solutionalhaunt", SolutionalHaunt },
+                { "meridian", Meridian }
+            };
+            foreach (string stage in AmbryStages)
+            {
+                byDestination[stage] = Ambry;
+            }
+            return byDestination;
+        }
 
         private static readonly string[] NoIds = new string[0];
 
@@ -79,7 +100,11 @@ namespace KarmaWarnings
 
             Row row = null;
             string token = target.ContextToken;
-            if (token == null || !ByToken.TryGetValue(token, out row))
+            if (token != null && ByToken.TryGetValue(token, out row) && !MatchesRow(target, row))
+            {
+                row = null;
+            }
+            if (row == null)
             {
                 if (destination != null)
                 {
@@ -95,6 +120,20 @@ namespace KarmaWarnings
             // Any other way out of the last stage of a loop starts the next loop.
             return isExit && context.LeavesLoopStage
                 && LoopWarning(context, out warning);
+        }
+
+        // Whether a portal matched by its prompt text really is that portal: the right object, leading somewhere that fits.
+        private static bool MatchesRow(AimedTarget target, Row row)
+        {
+            if (row.RequiredObjectName != null
+                && !(target.Generic && target.Generic.name.StartsWith(row.RequiredObjectName)))
+            {
+                return false;
+            }
+
+            SceneDef destination = target.Exit ? target.Exit.destinationScene : null;
+            return row.AllowedDestinations == null || !destination
+                || System.Array.IndexOf(row.AllowedDestinations, destination.cachedName) >= 0;
         }
 
         private static bool LoopWarning(WarningContext context, out KarmaWarning warning)
