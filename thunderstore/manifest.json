@@ -1,0 +1,10 @@
+{
+  "name": "KarmaWarnings",
+  "version_number": "0.1.0",
+  "website_url": "https://github.com/jacob5567/KarmaWarnings",
+  "description": "Warns you with a banner above the crosshair before you do something that raises your Karma. Client-side.",
+  "dependencies": [
+    "bbepis-BepInExPack-5.4.2122",
+    "RiskofThunder-RoR2BepInExPack-1.46.0"
+  ]
+}

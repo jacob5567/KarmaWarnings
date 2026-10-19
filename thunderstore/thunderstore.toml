@@ -1,0 +1,18 @@
+# Thunderstore CLI (tcli) settings for publishing. The release workflow uploads the zip from the GitHub release, so
+# the package contents, version and dependencies come from that zip's manifest.json; this file only says where it goes.
+[config]
+schemaVersion = "0.0.1"
+
+[package]
+namespace = "sevenstack"
+name = "KarmaWarnings"
+description = "Warns you with a banner above the crosshair before you do something that raises your Karma. Client-side."
+websiteUrl = "https://github.com/jacob5567/KarmaWarnings"
+containsNsfwContent = false
+
+[publish]
+repository = "https://thunderstore.io"
+communities = ["riskofrain2"]
+
+[publish.categories]
+riskofrain2 = ["mods", "client-side", "ai-generated"]
