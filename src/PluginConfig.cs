@@ -22,7 +22,7 @@ namespace KarmaWarnings
             DebugAlwaysShow = config.Bind("Debug", "DebugAlwaysShow", false,
                 "Show a warning even when nothing would raise your Karma, for testing.");
             DumpKey = config.Bind("Debug", "DumpKey", new KeyboardShortcut(KeyCode.F8),
-                "With DebugLogging on, press to log the current Karma state.");
+                "With DebugLogging on, press to log the current Karma state and what the warning banner is doing.");
         }
     }
 }

@@ -28,6 +28,11 @@ namespace KarmaWarnings
             }
 
             ModSettingsManager.AddOption(new CheckBoxOption(settings.Enabled));
+
+            // The options menu groups these under a "Debug" header, named after their config section.
+            ModSettingsManager.AddOption(new CheckBoxOption(settings.DebugLogging));
+            ModSettingsManager.AddOption(new CheckBoxOption(settings.DebugAlwaysShow));
+            ModSettingsManager.AddOption(new KeyBindOption(settings.DumpKey));
         }
 
         // The Thunderstore icon, embedded in the DLL by the csproj.
