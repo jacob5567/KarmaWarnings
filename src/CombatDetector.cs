@@ -14,7 +14,8 @@ namespace KarmaWarnings
         private const float QuickKillChargeFraction = 0.1f;
         // Warn once the boss is this far down, so the player still has time to stand in the zone.
         private const float BossHealthFractionToWarn = 0.5f;
-        // The Newt kicks the player out once hurt to this fraction of its health or lower, and SPEX does at its own.
+        // The Newt kicks the player out once hurt to this fraction of its health or lower, and SPEX does at its own. There
+        // is no warning at or below these: the player is warned, not told afterwards.
         private const float NewtKickHealthFraction = 0.99f;
         private const float SpexKickHealthFraction = 0.9f;
         private const float AimDistance = 80f;
@@ -52,7 +53,7 @@ namespace KarmaWarnings
             if (teleporter.chargeFraction > QuickKillChargeFraction) return false;
             if (boss.totalObservedHealth / boss.totalMaxObservedMaxHealth > BossHealthFractionToWarn) return false;
 
-            return context.TryMake("Killing the boss under 10% teleporter charge", WarningPriority.Combat,
+            return context.TryMake("when you kill the boss under 10% charge", WarningPriority.Combat,
                 BossIds, false, out warning);
         }
 
@@ -67,13 +68,11 @@ namespace KarmaWarnings
             CharacterBody newt = FindBody(body => body.bodyIndex == newtIndex);
             if (!newt) return false;
 
+            // Only a warning while it can still be avoided: once the Newt is hurt past the kick threshold it's too late.
             float health = newt.healthComponent.healthFraction;
-            if (health >= 1f && !IsAimingAt(context.Body, newt)) return false;
+            if (health <= NewtKickHealthFraction || (health >= 1f && !IsAimingAt(context.Body, newt))) return false;
 
-            string text = health <= NewtKickHealthFraction
-                ? "The Newt will kick you out"
-                : "Hurting the Newt gets you kicked out";
-            return context.TryMake(text, WarningPriority.Combat, NewtIds, false, out warning);
+            return context.TryMake("when the Newt kicks you out", WarningPriority.Combat, NewtIds, false, out warning);
         }
 
         private static bool Spex(WarningContext context, out KarmaWarning warning)
@@ -84,12 +83,9 @@ namespace KarmaWarnings
 
             CharacterBody spex = exchange.solusVendorBody;
             float health = spex.healthComponent.healthFraction;
-            if (health >= 1f && !IsAimingAt(context.Body, spex)) return false;
+            if (health <= SpexKickHealthFraction || (health >= 1f && !IsAimingAt(context.Body, spex))) return false;
 
-            string text = health <= SpexKickHealthFraction
-                ? "SPEX will kick you out"
-                : "Hurting SPEX gets you kicked out";
-            return context.TryMake(text, WarningPriority.Combat, SpexIds, false, out warning);
+            return context.TryMake("when SPEX kicks you out", WarningPriority.Combat, SpexIds, false, out warning);
         }
 
         // The two elemental Elder Lemurians in the hidden chamber have their own masters. The names are from the scene's
@@ -100,7 +96,7 @@ namespace KarmaWarnings
             CharacterBody lemurian = FindBody(body => body.master && IsElementalLemurianMaster(body.master.name));
             if (!lemurian) return false;
 
-            return context.TryMake("Killing both elemental Elder Lemurians", WarningPriority.Combat, LemurianIds, false,
+            return context.TryMake("when you kill both elemental Elder Lemurians", WarningPriority.Combat, LemurianIds, false,
                 out warning);
         }
 
@@ -117,11 +113,11 @@ namespace KarmaWarnings
             CharacterBody awu = FindBody(body => body.name.StartsWith("SuperRoboBallBossBody"));
             if (awu)
             {
-                return context.TryMake("Killing the Alloy Worship Unit", WarningPriority.Combat, AwuIds, false, out warning);
+                return context.TryMake("when you kill the Alloy Worship Unit", WarningPriority.Combat, AwuIds, false, out warning);
             }
 
             CharacterBody egg = FindBody(body => body.name.Contains("VultureEgg") && IsAimingAt(context.Body, body));
-            return egg && context.TryMake("Six Vulture Eggs summon the Alloy Worship Unit",
+            return egg && context.TryMake("when you kill the Alloy Worship Unit that six eggs summon",
                 WarningPriority.Combat, AwuIds, false, out warning);
         }
 

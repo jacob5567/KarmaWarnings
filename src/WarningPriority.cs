@@ -8,5 +8,7 @@ namespace KarmaWarnings
         public const int Combat = 80;
         public const int Item = 60;
         public const int Loop = 20;
+        // The DebugAlwaysShow test banner: only shown when nothing real applies.
+        public const int Debug = 0;
     }
 }

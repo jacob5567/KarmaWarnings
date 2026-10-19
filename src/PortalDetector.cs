@@ -32,28 +32,28 @@ namespace KarmaWarnings
             }
         }
 
-        private static readonly Row Arena = new Row("Void Fields: starting and finishing the cells",
+        private static readonly Row Arena = new Row("when you start and finish the Void cells",
             KarmaTriggers.EnterArena, KarmaTriggers.CompletedArena);
-        private static readonly Row GildedCoast = new Row("Gilded Coast: can't leave until Aurelionite dies",
+        private static readonly Row GildedCoast = new Row("when you kill Aurelionite",
             KarmaTriggers.DefeatAurelionite);
         // Bulwark's Ambry and its three Seekers of the Storm variants (Aphelian, Tar and Wisp Research).
         private static readonly string[] AmbryStages = { "artifactworld", "artifactworld01", "artifactworld02", "artifactworld03" };
 
-        private static readonly Row Ambry = new Row("Bulwark's Ambry: can't leave until the trial ends",
+        private static readonly Row Ambry = new Row("when you finish the Artifact Trial",
             KarmaTriggers.ArtifactWorldComplete)
         {
             RequiredObjectName = "PortalArtifactworld",
             AllowedDestinations = AmbryStages
         };
-        private static readonly Row Threshold = new Row("Soulbound Threshold: kill the Anima Harvester or die to leave",
+        private static readonly Row Threshold = new Row("when you kill the Anima Harvester",
             KarmaTriggers.BeatChampRushReaper);
-        private static readonly Row Lucidity = new Row("Terminal Lucidity: killing the Echo of Providence",
+        private static readonly Row Lucidity = new Row("when you kill the secret boss",
             KarmaTriggers.KillProvidence);
-        private static readonly Row NeuralSanctum = new Row("Neural Sanctum: killing the Solus Heart",
+        private static readonly Row NeuralSanctum = new Row("when you kill the Solus Heart",
             KarmaTriggers.DefeatSolusHeart);
-        private static readonly Row SolutionalHaunt = new Row("Solutional Haunt: killing the Solus Wing",
+        private static readonly Row SolutionalHaunt = new Row("when you kill the Solus Wing",
             KarmaTriggers.DefeatSolusWing);
-        private static readonly Row Meridian = new Row("Prime Meridian: killing False Son",
+        private static readonly Row Meridian = new Row("when you kill False Son",
             KarmaTriggers.DefeatFalseSon);
 
         private static readonly Dictionary<string, Row> ByToken = new Dictionary<string, Row>
@@ -144,7 +144,7 @@ namespace KarmaWarnings
             warning = new KarmaWarning
             {
                 Amount = context.AmountFor(KarmaTriggers.LoopAtLeastOnce),
-                Text = "Starting a new loop",
+                Text = "when you start a new loop",
                 Priority = WarningPriority.Loop
             };
             return warning.Amount > 0;

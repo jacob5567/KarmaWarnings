@@ -135,7 +135,7 @@ namespace KarmaWarnings
         {
             if (!textByMask.TryGetValue(mask, out string text))
             {
-                StringBuilder builder = new StringBuilder("Gives you ");
+                StringBuilder builder = new StringBuilder("when you take this and have ");
                 bool first = true;
                 for (int i = 0; i < ItemRules.Phrases.Length; i++)
                 {

@@ -17,7 +17,7 @@ namespace KarmaWarnings
         // doesn't, and is told apart by not being part of the scene file (its network scene id is empty).
         private static readonly string[] HiddenChestScenes = { "dampcavesimple", "rootjungle", "repurposedcrater" };
 
-        private const string CatastropheText = "Surviving the catastrophe teleporter";
+        private const string CatastropheText = "when you survive the catastrophe teleporter";
 
         private static readonly string[] CatastropheIds = { KarmaTriggers.SurviveMajorCatastrophe };
         private static readonly string[] ChestIds = { KarmaTriggers.OpenHiddenGoldChest };
@@ -43,7 +43,7 @@ namespace KarmaWarnings
 
             if (IsHiddenChest(context) && IsAvailable(target))
             {
-                return context.TryMake("Opening this Legendary Chest", WarningPriority.Interaction, ChestIds, false,
+                return context.TryMake("when you open this Legendary Chest", WarningPriority.Interaction, ChestIds, false,
                     out warning);
             }
 
@@ -52,7 +52,7 @@ namespace KarmaWarnings
                 bool draining = target.Halcyon.interactions >= InteractionsWhenDraining;
                 string text = draining
                     ? "Interact again before it fills to avoid Karma"
-                    : "Fully draining this shrine and killing the Halcyonite";
+                    : "when you kill the Halcyonite";
                 bool applies = context.TryMake(text, WarningPriority.Interaction, HalcyonIds, false, out warning);
                 // Once it's draining the message is advice, so it has no "Increases Karma" headline.
                 warning.HideHeadline = draining;

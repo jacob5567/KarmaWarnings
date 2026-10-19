@@ -69,12 +69,21 @@ namespace KarmaWarnings
             PluginConfig settings = KarmaWarningsPlugin.Settings;
             if (!settings.Enabled.Value) return false;
 
+            if (TryFindDetectorWarning(out warning)) return true;
+
             if (settings.DebugAlwaysShow.Value)
             {
-                // Skips the Karma gates too, so it can be seen with Karma off or at the maximum.
-                warning = new KarmaWarning { Amount = 1, Text = "Debug: test warning", Priority = int.MaxValue };
+                // The lowest priority, so it never hides a real warning. It skips the Karma gates, so it shows with Karma off
+                // or at the maximum.
+                warning = new KarmaWarning { Amount = 1, Text = "when DebugAlwaysShow is on", Priority = WarningPriority.Debug };
                 return true;
             }
+            return false;
+        }
+
+        private bool TryFindDetectorWarning(out KarmaWarning warning)
+        {
+            warning = default;
 
             // The local player's own body, not whoever the HUD is spectating: only your own actions matter.
             CharacterBody body = hud.localUserViewer?.cachedBody;
