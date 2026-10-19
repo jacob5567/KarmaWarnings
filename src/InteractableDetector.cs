@@ -16,7 +16,7 @@ namespace KarmaWarnings
         // doesn't, and is told apart by not being part of the scene file (its network scene id is empty).
         private static readonly string[] HiddenChestScenes = { "dampcavesimple", "rootjungle", "repurposedcrater" };
 
-        private const string CatastropheText = "Surviving the catastrophe teleporter adds Karma";
+        private const string CatastropheText = "Surviving the catastrophe teleporter";
 
         private static readonly string[] CatastropheIds = { KarmaTriggers.SurviveMajorCatastrophe };
         private static readonly string[] AltarIds = { KarmaTriggers.DefeatAurelionite };
@@ -43,13 +43,13 @@ namespace KarmaWarnings
 
             if (target.Statue && target.Statue.portalType == PortalStatueBehavior.PortalType.Goldshores && IsAvailable(target))
             {
-                return context.TryMake("Altar of Gold: opens the way to Gilded Coast, which you can't leave until Aurelionite is dead",
+                return context.TryMake("Gilded Coast: can't leave until Aurelionite dies",
                     WarningPriority.Stage, AltarIds, false, out warning);
             }
 
             if (IsHiddenChest(context) && IsAvailable(target))
             {
-                return context.TryMake("This Legendary Chest adds Karma when opened", WarningPriority.Interaction, ChestIds, false,
+                return context.TryMake("Opening this Legendary Chest", WarningPriority.Interaction, ChestIds, false,
                     out warning);
             }
 
@@ -57,8 +57,8 @@ namespace KarmaWarnings
             {
                 bool draining = target.Halcyon.interactions >= InteractionsWhenDraining;
                 string text = draining
-                    ? "Interact again before the shrine fills to avoid Karma"
-                    : "Draining this shrine completely and killing the Halcyonite adds Karma";
+                    ? "Interact again before it fills to avoid Karma"
+                    : "Fully draining this shrine and killing the Halcyonite";
                 bool applies = context.TryMake(text, WarningPriority.Interaction, HalcyonIds, false, out warning);
                 // Once it's draining the message is advice, so it has no "Increases Karma" headline.
                 warning.HideHeadline = draining;

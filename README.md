@@ -16,6 +16,8 @@ A short banner right above the crosshair: "Increases Karma", with a line under i
 - **Items:** a pickup, shop terminal or item choice that would reach 3 Lunar items, 3 Meal items, 5 Hallowed items, 50 items, or an Elite Aspect.
 - **Looping:** leaving the fifth stage of a loop.
 
+[MESSAGES.md](MESSAGES.md) lists every message and when it appears.
+
 Nothing is shown when Karma is turned off for the run, when you're already at 8 Karma, or when you've already earned that milestone and it only counts once. If you join a run in progress and the mod can't tell, it still warns.
 
 Some things can't be warned about in time: an Elite Aspect picked up by walking over it with an empty equipment slot, and damage to the Newt or SPEX that is already past the point of no return.

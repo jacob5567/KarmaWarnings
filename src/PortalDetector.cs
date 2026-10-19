@@ -23,21 +23,21 @@ namespace KarmaWarnings
             }
         }
 
-        private static readonly Row Arena = new Row("Void Fields: starting the cells and finishing them each add Karma",
+        private static readonly Row Arena = new Row("Void Fields: starting and finishing the cells",
             KarmaTriggers.EnterArena, KarmaTriggers.CompletedArena);
-        private static readonly Row GildedCoast = new Row("Gilded Coast: you can't leave until Aurelionite is dead",
+        private static readonly Row GildedCoast = new Row("Gilded Coast: can't leave until Aurelionite dies",
             KarmaTriggers.DefeatAurelionite);
-        private static readonly Row Ambry = new Row("Bulwark's Ambry: you can't leave until the trial is done",
+        private static readonly Row Ambry = new Row("Bulwark's Ambry: can't leave until the trial ends",
             KarmaTriggers.ArtifactWorldComplete);
-        private static readonly Row Threshold = new Row("Soulbound Threshold: killing the Anima Harvester adds Karma, and you only leave by doing that or dying",
+        private static readonly Row Threshold = new Row("Soulbound Threshold: kill the Anima Harvester or die to leave",
             KarmaTriggers.BeatChampRushReaper);
-        private static readonly Row Lucidity = new Row("Terminal Lucidity: killing the Echo of Providence adds Karma",
+        private static readonly Row Lucidity = new Row("Terminal Lucidity: killing the Echo of Providence",
             KarmaTriggers.KillProvidence);
-        private static readonly Row NeuralSanctum = new Row("Neural Sanctum: killing the Solus Heart adds Karma",
+        private static readonly Row NeuralSanctum = new Row("Neural Sanctum: killing the Solus Heart",
             KarmaTriggers.DefeatSolusHeart);
-        private static readonly Row SolutionalHaunt = new Row("Solutional Haunt: killing the Solus Wing adds Karma",
+        private static readonly Row SolutionalHaunt = new Row("Solutional Haunt: killing the Solus Wing",
             KarmaTriggers.DefeatSolusWing);
-        private static readonly Row Meridian = new Row("Prime Meridian: killing False Son adds Karma",
+        private static readonly Row Meridian = new Row("Prime Meridian: killing False Son",
             KarmaTriggers.DefeatFalseSon);
 
         private static readonly Dictionary<string, Row> ByToken = new Dictionary<string, Row>
@@ -105,7 +105,7 @@ namespace KarmaWarnings
             warning = new KarmaWarning
             {
                 Amount = context.AmountFor(KarmaTriggers.LoopAtLeastOnce),
-                Text = "Leaving this stage starts a new loop",
+                Text = "Starting a new loop",
                 Priority = WarningPriority.Loop
             };
             return warning.Amount > 0;

@@ -52,7 +52,7 @@ namespace KarmaWarnings
             if (teleporter.chargeFraction > QuickKillChargeFraction) return false;
             if (boss.totalObservedHealth / boss.totalMaxObservedMaxHealth > BossHealthFractionToWarn) return false;
 
-            return context.TryMake("Killing the boss before the teleporter is 10% charged adds Karma", WarningPriority.Combat,
+            return context.TryMake("Killing the boss under 10% teleporter charge", WarningPriority.Combat,
                 BossIds, false, out warning);
         }
 
@@ -71,8 +71,8 @@ namespace KarmaWarnings
             if (health >= 1f && !IsAimingAt(context.Body, newt)) return false;
 
             string text = health <= NewtKickHealthFraction
-                ? "The Newt is going to kick you out of the Bazaar"
-                : "Hurting the Newt gets you kicked out of the Bazaar";
+                ? "The Newt will kick you out"
+                : "Hurting the Newt gets you kicked out";
             return context.TryMake(text, WarningPriority.Combat, NewtIds, false, out warning);
         }
 
@@ -87,8 +87,8 @@ namespace KarmaWarnings
             if (health >= 1f && !IsAimingAt(context.Body, spex)) return false;
 
             string text = health <= SpexKickHealthFraction
-                ? "SPEX is going to kick you out of the Computational Exchange"
-                : "Hurting SPEX much more gets you kicked out of the Computational Exchange";
+                ? "SPEX will kick you out"
+                : "Hurting SPEX gets you kicked out";
             return context.TryMake(text, WarningPriority.Combat, SpexIds, false, out warning);
         }
 
@@ -100,7 +100,7 @@ namespace KarmaWarnings
             CharacterBody lemurian = FindBody(body => body.master && IsElementalLemurianMaster(body.master.name));
             if (!lemurian) return false;
 
-            return context.TryMake("Killing both elemental Elder Lemurians adds Karma", WarningPriority.Combat, LemurianIds, false,
+            return context.TryMake("Killing both elemental Elder Lemurians", WarningPriority.Combat, LemurianIds, false,
                 out warning);
         }
 
@@ -117,11 +117,11 @@ namespace KarmaWarnings
             CharacterBody awu = FindBody(body => body.name.StartsWith("SuperRoboBallBossBody"));
             if (awu)
             {
-                return context.TryMake("Killing the Alloy Worship Unit adds Karma", WarningPriority.Combat, AwuIds, false, out warning);
+                return context.TryMake("Killing the Alloy Worship Unit", WarningPriority.Combat, AwuIds, false, out warning);
             }
 
             CharacterBody egg = FindBody(body => body.name.Contains("VultureEgg") && IsAimingAt(context.Body, body));
-            return egg && context.TryMake("Destroying six Vulture Eggs summons the Alloy Worship Unit, and killing it adds Karma",
+            return egg && context.TryMake("Six Vulture Eggs summon the Alloy Worship Unit",
                 WarningPriority.Combat, AwuIds, false, out warning);
         }
 

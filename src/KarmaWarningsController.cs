@@ -72,7 +72,7 @@ namespace KarmaWarnings
             if (settings.DebugAlwaysShow.Value)
             {
                 // Skips the Karma gates too, so it can be seen with Karma off or at the maximum.
-                warning = new KarmaWarning { Amount = 1, Text = "Debug: this is a test warning", Priority = int.MaxValue };
+                warning = new KarmaWarning { Amount = 1, Text = "Debug: test warning", Priority = int.MaxValue };
                 return true;
             }
 
