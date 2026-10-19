@@ -9,6 +9,9 @@ namespace KarmaWarnings
     //
     // The host reads the game's own flag. A client can't: BaseKarmaTrigger.isComplete is only set on the server. So a
     // client works it out from what it can see, and anything it can't tell counts as not earned (it warns).
+    //
+    // The mod never calls [Server] methods such as SetKarmaServer or Get/SetEventFlag: they are host-only and some change
+    // the run. Clients infer state from the scene, inventory and DLC4ProgressionController instead.
     internal static class KarmaTriggerState
     {
         // A trigger whose Karma went up while the player was in its stage can't be left before it's earned, so a rise in

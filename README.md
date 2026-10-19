@@ -24,14 +24,14 @@ Some things can't be warned about in time: an Elite Aspect picked up by walking 
 
 ## Notes
 
-- Warnings use the game's own rules, read from the game's code. A few things couldn't be confirmed without playing, so expect to see some mistakes: which green portal leads to Prime Meridian, the Solus fights' portals, the elemental Elder Lemurians' names, and whether leaving the moon's stage counts as a loop.
+- Warnings use the game's own rules, read from the game's code. A few things couldn't be confirmed without playing, so expect to see some mistakes: which green portal leads to Prime Meridian, the Solus fights' portals, the elemental Elder Lemurians' names, whether leaving the moon's stage counts as a loop, whether clients can see a Halcyon Shrine's charge, and the vulture egg count.
 - Not warned about yet: an open item-choice panel (Command, Void potentials), a ready CHEF meal, and items still falling out of a chest.
 - Not warned about on purpose: the Obelisk in A Moment, Fractured (the run ends right after), and item thresholds crossed by monsters or drones, such as with Artifact of Evolution.
 - Item warnings skip shop terminals showing "?", so they never give away what's inside, and terminals paid for with items.
 
 ## Multiplayer
 
-The mod never changes gameplay and never sends anything over the network. It works when you join a host who doesn't have it installed. As a client it can't see which one-time milestones the host has already counted, so it works that out from what it can see.
+The mod never changes gameplay and never sends anything over the network. It works when you join a host who doesn't have it installed. As a client it can't see which one-time milestones the host has already counted, so it works that out from what it can see. The host reads the game's own completed flag. A client marks a stage milestone earned when Karma rises while it is in that stage (Void Fields, Gilded Coast, Prime Meridian, the Solus stages, the Reaper fight, Commencement, Computational Exchange), marks item milestones earned when any player's inventory meets them, and marks the Reaper beaten from the game's progression state. Anything it can't tell still warns.
 
 ## Configuration
 
@@ -47,6 +47,8 @@ Edit `BepInEx/config/sevenstack.KarmaWarnings.cfg`, or use the in-game settings 
 ## Building
 
 Requires the .NET 8 SDK, a local Risk of Rain 2 install, and [Risk Of Options](https://thunderstore.io/package/Rune580/Risk_Of_Options/) in the r2modman profile (it is only referenced for the settings menu). `dotnet build -c Release` builds the plugin and copies it into the r2modman Default profile; add `-p:CopyToProfile=false` to skip the copy. `./build.sh` also writes the Thunderstore zip to `dist/`. The default game and profile paths are in `Directory.Build.props`; override them on the command line or in a `Directory.Build.props.user` file.
+
+The version lives in `thunderstore/manifest.json`. To release, bump it, run `./build.sh`, and publish a GitHub release tagged `v<version>` with the zip attached. The publish workflow then uploads that zip to Thunderstore.
 
 ## License
 
