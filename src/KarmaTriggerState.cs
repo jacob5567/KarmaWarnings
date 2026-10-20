@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using RoR2;
@@ -16,6 +17,8 @@ namespace KarmaWarnings
     {
         // A trigger whose Karma went up while the player was in its stage can't be left before it's earned, so a rise in
         // that stage means it's done. Several triggers can share a stage; they are all earned by the time it's left.
+        // The Computational Exchange isn't one: it can be left without being kicked out, and taking items there can raise
+        // Karma for other reasons.
         private static readonly Dictionary<string, string[]> HomeStages = new Dictionary<string, string[]>
         {
             { "arena", new[] { KarmaTriggers.EnterArena, KarmaTriggers.CompletedArena } },
@@ -24,28 +27,37 @@ namespace KarmaWarnings
             { "solutionalhaunt", new[] { KarmaTriggers.DefeatSolusWing } },
             { "solusweb", new[] { KarmaTriggers.DefeatSolusHeart } },
             { "champrush", new[] { KarmaTriggers.BeatChampRushReaper } },
-            { "ultima", new[] { KarmaTriggers.KillProvidence } },
-            { "computationalexchange", new[] { KarmaTriggers.KickedOutOfCompExchange } }
+            { "ultima", new[] { KarmaTriggers.KillProvidence } }
         };
 
         private static readonly HashSet<string> earned = new HashSet<string>();
+        // The Karma before the latest change, or -1 outside a run.
         private static int lastKarma = -1;
 
         public static void Install()
         {
-            Run.onRunStartGlobal += OnRunBoundary;
-            Run.onRunDestroyGlobal += OnRunBoundary;
+            Run.onRunStartGlobal += OnRunStart;
+            Run.onRunDestroyGlobal += OnRunDestroy;
             KarmaManager.onKarmaChangedClient += OnKarmaChanged;
         }
 
         public static void Uninstall()
         {
-            Run.onRunStartGlobal -= OnRunBoundary;
-            Run.onRunDestroyGlobal -= OnRunBoundary;
+            Run.onRunStartGlobal -= OnRunStart;
+            Run.onRunDestroyGlobal -= OnRunDestroy;
             KarmaManager.onKarmaChangedClient -= OnKarmaChanged;
         }
 
-        private static void OnRunBoundary(Run run)
+        // onKarmaChangedClient only fires when Karma changes, so the run's starting Karma is the baseline. Without it, the
+        // first rise of a run starting at 0 would be the first event seen, with nothing to compare it to. A run that
+        // starts above 0 fires once to reach its starting Karma, which isn't a rise from this baseline.
+        private static void OnRunStart(Run run)
+        {
+            earned.Clear();
+            lastKarma = Math.Max(run.ruleBook.startingKarma, 0);
+        }
+
+        private static void OnRunDestroy(Run run)
         {
             earned.Clear();
             lastKarma = -1;

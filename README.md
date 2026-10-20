@@ -31,7 +31,7 @@ Some things can't be warned about in time: an Elite Aspect picked up by walking 
 
 ## Multiplayer
 
-The mod never changes gameplay and never sends anything over the network. It works when you join a host who doesn't have it installed. As a client it can't see which one-time milestones the host has already counted, so it works that out from what it can see. The host reads the game's own completed flag. A client marks a stage milestone earned when Karma rises while it is in that stage (Void Fields, Gilded Coast, Prime Meridian, the Solus stages, the Reaper fight, Commencement, Computational Exchange), marks item milestones earned when any player's inventory meets them, and marks the Reaper beaten from the game's progression state. Anything it can't tell still warns.
+The mod never changes gameplay and never sends anything over the network. It works when you join a host who doesn't have it installed. As a client it can't see which one-time milestones the host has already counted, so it works that out from what it can see. The host reads the game's own completed flag. A client marks a stage milestone earned when Karma rises while it is in that stage (Void Fields, Gilded Coast, Prime Meridian, the Solus stages, the Reaper fight, Commencement), marks item milestones earned when any player's inventory meets them, and marks the Reaper beaten from the game's progression state. Anything it can't tell still warns.
 
 ## Configuration
 
