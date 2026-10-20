@@ -63,7 +63,7 @@ namespace KarmaWarnings
         }
 
         // The game's own client-side test for lighting the teleporter's catastrophe particles. Every input is synced.
-        private static bool IsCatastropheTeleporter()
+        internal static bool IsCatastropheTeleporter()
         {
             DLC4ProgressionController progression = DLC4ProgressionController.instance;
             return progression && progression.catastropheProvider && progression.catastropheProvider.WillTriggerMajorCatastrophe();

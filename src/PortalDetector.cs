@@ -139,7 +139,7 @@ namespace KarmaWarnings
             if (target.IsTeleporter)
             {
                 TeleporterInteraction teleporter = target.Teleporter;
-                return $"teleporter {teleporter.activationState}, aimed at {(target.AimedAtMoon ? "the moon" : "the next stage")}, counts as leaving: {IsLeavingTeleporter(target)}";
+                return $"teleporter {teleporter.activationState}, aimed at {(target.AimedAtMoon ? "the moon" : "the next stage")}, counts as leaving: {IsLeavingTeleporter(target)}, catastrophe: {InteractableDetector.IsCatastropheTeleporter()}";
             }
             if (target.Exit)
             {
