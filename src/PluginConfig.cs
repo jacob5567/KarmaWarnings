@@ -18,11 +18,11 @@ namespace KarmaWarnings
                 "Show a warning above the crosshair before you do something that raises your Karma.");
 
             DebugLogging = config.Bind("Debug", "DebugLogging", false,
-                "Log extra information about what the mod detects, and enable the dump key.");
+                "Enable the dump key, which logs the Karma state and what the mod sees around you.");
             DebugAlwaysShow = config.Bind("Debug", "DebugAlwaysShow", false,
                 "Show a warning even when nothing would raise your Karma, for testing.");
             DumpKey = config.Bind("Debug", "DumpKey", new KeyboardShortcut(KeyCode.F8),
-                "With DebugLogging on, press to log the current Karma state and what the warning banner is doing.");
+                "With DebugLogging on, press to log the Karma state, what the warning banner shows, the exit you're aiming at, and what the fight checks for this stage see.");
         }
     }
 }

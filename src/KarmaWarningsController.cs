@@ -15,10 +15,9 @@ namespace KarmaWarnings
         private static readonly List<KarmaWarningsController> instances = new List<KarmaWarningsController>();
 
         private readonly WarningContext context = new WarningContext();
-        private readonly IWarningDetector[] detectors =
-        {
-            new PortalDetector(), new InteractableDetector(), new CombatDetector(), new ItemDetector()
-        };
+        private readonly PortalDetector portals = new PortalDetector();
+        private readonly CombatDetector combat = new CombatDetector();
+        private IWarningDetector[] detectors;
 
         private HUD hud;
         private WarningBanner banner;
@@ -32,6 +31,7 @@ namespace KarmaWarnings
         private void Awake()
         {
             hud = GetComponent<HUD>();
+            detectors = new IWarningDetector[] { portals, new InteractableDetector(), combat, new ItemDetector() };
         }
 
         private void OnEnable()
@@ -110,13 +110,16 @@ namespace KarmaWarnings
             return found;
         }
 
-        // One line for the F8 dump.
+        // The F8 dump: what the banner shows, what the player is aiming at, and what the fight checks see. The context is
+        // what the last frame with a living body saw.
         public string Describe()
         {
             CharacterBody body = hud.localUserViewer?.cachedBody;
             string warning = showing ? $"showing \"{current.Text}\" (+{current.Amount})" : "nothing to show";
             string aimed = context.Target.Root ? context.Target.Root.name : "nothing";
-            return $"HUD of {(body ? body.GetDisplayName() : "no body")}: {warning}; stage {context.SceneName} (order {context.StageOrder}), aiming at {aimed}";
+            return $"HUD of {(body ? body.GetDisplayName() : "no body")}: {warning}; stage {context.SceneName} (order {context.StageOrder}), aiming at {aimed}"
+                + "\n    exit: " + portals.Describe(context)
+                + "\n    fights: " + combat.Describe(context);
         }
     }
 }

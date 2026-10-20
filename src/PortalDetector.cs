@@ -4,7 +4,7 @@ using RoR2;
 namespace KarmaWarnings
 {
     // Warns while the player aims at a portal that leads to a stage they can't leave without a Karma milestone, and at
-    // any exit from the last stage of a loop.
+    // any way from the last stage of a loop to the next stage.
     //
     // The portal dialer on Sky Meadow and Helminth Hatchery (the Compound Generator and its laptop) gets no warning:
     // only the portal it opens is a commitment.
@@ -95,7 +95,8 @@ namespace KarmaWarnings
             AimedTarget target = context.Target;
             if (!target.Root) return false;
 
-            bool isExit = target.Exit || (target.Teleporter && target.Teleporter.isCharged);
+            // Every teleporter has a SceneExitController, so a teleporter is told apart before the exit check.
+            bool isExit = target.Teleporter ? IsLeavingTeleporter(target) : (bool)target.Exit;
             string destination = target.Exit ? DestinationName(context, target.Exit) : null;
 
             Row row = null;
@@ -120,6 +121,30 @@ namespace KarmaWarnings
             // Any other way out of the last stage of a loop starts the next loop.
             return isExit && context.LeavesLoopStage
                 && LoopWarning(context, out warning);
+        }
+
+        // A teleporter that will take the player to the next stage: one that hasn't been started yet or is fully charged,
+        // and isn't a Primordial Teleporter aligned with the moon. While it charges, the player is already committed.
+        private static bool IsLeavingTeleporter(AimedTarget target)
+        {
+            TeleporterInteraction teleporter = target.Teleporter;
+            return target.IsTeleporter && (teleporter.isIdle || teleporter.isCharged) && !target.AimedAtMoon;
+        }
+
+        // One line for the F8 dump: what the aimed-at exit is and where it leads.
+        public string Describe(WarningContext context)
+        {
+            AimedTarget target = context.Target;
+            if (target.IsTeleporter)
+            {
+                TeleporterInteraction teleporter = target.Teleporter;
+                return $"teleporter {teleporter.activationState}, aimed at {(target.AimedAtMoon ? "the moon" : "the next stage")}, counts as leaving: {IsLeavingTeleporter(target)}";
+            }
+            if (target.Exit)
+            {
+                return $"exit to {DestinationName(context, target.Exit) ?? "a destination set by the server"} (token {target.ContextToken ?? "none"})";
+            }
+            return "not aiming at an exit";
         }
 
         // Whether a portal matched by its prompt text really is that portal: the right object, leading somewhere that fits.

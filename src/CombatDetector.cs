@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 using RoR2;
 using UnityEngine;
 
@@ -7,7 +9,7 @@ namespace KarmaWarnings
     // Warns during fights where the Karma comes from how it ends: a teleporter boss killed before the teleporter is 10%
     // charged, the Newt and SPEX kicking the player out, the elemental Elder Lemurians, and the Alloy Worship Unit.
     //
-    // Which stage the player is in gates every check, so the body scan only runs in the few stages that need it.
+    // Which stage the player is in gates the body scans, so they only run in the few stages that need them.
     internal sealed class CombatDetector : IWarningDetector
     {
         // Under this much charge, killing the teleporter's boss adds Karma (RoR2.Karma.KillABossQuickly).
@@ -27,18 +29,31 @@ namespace KarmaWarnings
         private static readonly string[] LemurianIds = { KarmaTriggers.KilledElementalLemurians };
         private static readonly string[] AwuIds = { KarmaTriggers.SuperRoboBallBossBeaten };
 
+        // Looked up by name once the body catalog is ready, so the per-frame scans compare indexes, not object names
+        // (reading a Unity object's name allocates a new string every time).
         private BodyIndex newtIndex = BodyIndex.None;
+        private BodyIndex awuIndex = BodyIndex.None;
+        private BodyIndex eggIndex = BodyIndex.None;
+
+        // The elemental Elder Lemurians are told apart only by their master's name, so each body is checked once per
+        // stage. Bodies whose master hasn't arrived yet aren't cached.
+        private readonly Dictionary<CharacterBody, bool> elementalByBody = new Dictionary<CharacterBody, bool>();
+        private int elementalSceneHandle = -1;
 
         public bool TryGetWarning(WarningContext context, out KarmaWarning warning)
         {
-            warning = default;
             switch (context.SceneName)
             {
                 case "bazaar": return Newt(context, out warning);
                 case "computationalexchange": return Spex(context, out warning);
-                case "goolake": return ElementalLemurians(context, out warning);
-                case "shipgraveyard": return AlloyWorshipUnit(context, out warning);
+                case "goolake":
+                    if (ElementalLemurians(context, out warning)) return true;
+                    break;
+                case "shipgraveyard":
+                    if (AlloyWorshipUnit(context, out warning)) return true;
+                    break;
             }
+            // Abandoned Aqueduct and Siren's Call have a teleporter too.
             return TeleporterBoss(context, out warning);
         }
 
@@ -60,12 +75,7 @@ namespace KarmaWarnings
         private bool Newt(WarningContext context, out KarmaWarning warning)
         {
             warning = default;
-            if (newtIndex == BodyIndex.None)
-            {
-                newtIndex = BodyCatalog.FindBodyIndex("ShopkeeperBody");
-            }
-
-            CharacterBody newt = FindBody(body => body.bodyIndex == newtIndex);
+            CharacterBody newt = FindBody(Lookup(ref newtIndex, "ShopkeeperBody"));
             if (!newt) return false;
 
             // Only a warning while it can still be avoided: once the Newt is hurt past the kick threshold it's too late.
@@ -88,16 +98,44 @@ namespace KarmaWarnings
             return context.TryMake("when SPEX kicks you out", WarningPriority.Combat, SpexIds, false, out warning);
         }
 
-        // The two elemental Elder Lemurians in the hidden chamber have their own masters. The names are from the scene's
-        // spawn setup and haven't been checked in game, so DebugLogging logs what the scan finds.
-        private static bool ElementalLemurians(WarningContext context, out KarmaWarning warning)
+        // The two elemental Elder Lemurians in the hidden chamber have their own masters, placed in the scene rather than
+        // spawned from the catalog. The names are from the scene's spawn setup and haven't been checked in game, so the
+        // F8 dump lists the Elder Lemurian masters it finds.
+        private bool ElementalLemurians(WarningContext context, out KarmaWarning warning)
         {
             warning = default;
-            CharacterBody lemurian = FindBody(body => body.master && IsElementalLemurianMaster(body.master.name));
-            if (!lemurian) return false;
+            if (elementalSceneHandle != context.SceneHandle)
+            {
+                elementalSceneHandle = context.SceneHandle;
+                elementalByBody.Clear();
+            }
+
+            if (!AnyElementalLemurian()) return false;
 
             return context.TryMake("when you kill both elemental Elder Lemurians", WarningPriority.Combat, LemurianIds, false,
                 out warning);
+        }
+
+        private bool AnyElementalLemurian()
+        {
+            ReadOnlyCollection<CharacterBody> bodies = CharacterBody.readOnlyInstancesList;
+            for (int i = 0; i < bodies.Count; i++)
+            {
+                if (bodies[i] && IsElementalLemurian(bodies[i])) return true;
+            }
+            return false;
+        }
+
+        private bool IsElementalLemurian(CharacterBody body)
+        {
+            if (elementalByBody.TryGetValue(body, out bool elemental)) return elemental;
+
+            CharacterMaster master = body.master;
+            if (!master) return false;
+
+            elemental = IsElementalLemurianMaster(master.name);
+            elementalByBody[body] = elemental;
+            return elemental;
         }
 
         private static bool IsElementalLemurianMaster(string name)
@@ -105,28 +143,106 @@ namespace KarmaWarnings
             return name.StartsWith("LemurianBruiserFireMaster") || name.StartsWith("LemurianBruiserIceMaster");
         }
 
-        // Destroying six Vulture Eggs summons the Alloy Worship Unit, and killing it adds Karma. The same name test the
-        // game uses to find the eggs.
-        private static bool AlloyWorshipUnit(WarningContext context, out KarmaWarning warning)
+        // Destroying six Vulture Eggs summons the Alloy Worship Unit, and killing it adds Karma.
+        private bool AlloyWorshipUnit(WarningContext context, out KarmaWarning warning)
         {
             warning = default;
-            CharacterBody awu = FindBody(body => body.name.StartsWith("SuperRoboBallBossBody"));
-            if (awu)
+            if (FindBody(Lookup(ref awuIndex, "SuperRoboBallBossBody")))
             {
                 return context.TryMake("when you kill the Alloy Worship Unit", WarningPriority.Combat, AwuIds, false, out warning);
             }
 
-            CharacterBody egg = FindBody(body => body.name.Contains("VultureEgg") && IsAimingAt(context.Body, body));
-            return egg && context.TryMake("when you kill the Alloy Worship Unit that six eggs summon",
+            return IsAimingAtEgg(context.Body) && context.TryMake("when you kill the Alloy Worship Unit that six eggs summon",
                 WarningPriority.Combat, AwuIds, false, out warning);
         }
 
-        private static CharacterBody FindBody(System.Predicate<CharacterBody> match)
+        private bool IsAimingAtEgg(CharacterBody player)
         {
+            BodyIndex egg = Lookup(ref eggIndex, "VultureEggBody");
+            if (egg == BodyIndex.None) return false;
+
             ReadOnlyCollection<CharacterBody> bodies = CharacterBody.readOnlyInstancesList;
             for (int i = 0; i < bodies.Count; i++)
             {
-                if (bodies[i] && match(bodies[i])) return bodies[i];
+                if (bodies[i] && bodies[i].bodyIndex == egg && IsAimingAt(player, bodies[i])) return true;
+            }
+            return false;
+        }
+
+        // One line for the F8 dump: what the fight checks for this stage can see.
+        public string Describe(WarningContext context)
+        {
+            StringBuilder text = new StringBuilder();
+            TeleporterInteraction teleporter = TeleporterInteraction.instance;
+            if (teleporter)
+            {
+                text.Append($"teleporter {teleporter.activationState} at {teleporter.chargeFraction:P0}");
+                BossGroup boss = teleporter.bossGroup;
+                if (boss && boss.combatSquad && boss.combatSquad.memberCount > 0 && boss.totalMaxObservedMaxHealth > 0f)
+                {
+                    text.Append($", boss at {boss.totalObservedHealth / boss.totalMaxObservedMaxHealth:P0}");
+                }
+            }
+            else
+            {
+                text.Append("no teleporter");
+            }
+
+            switch (context.SceneName)
+            {
+                case "bazaar":
+                    CharacterBody newt = FindBody(Lookup(ref newtIndex, "ShopkeeperBody"));
+                    text.Append(newt ? $"; Newt at {newt.healthComponent.healthFraction:P1}" : "; no Newt found");
+                    break;
+                case "computationalexchange":
+                    ComputationalExchangeController exchange = ComputationalExchangeController.instance;
+                    text.Append(exchange && exchange.solusVendorBody
+                        ? $"; SPEX awake={exchange.isAwake} at {exchange.solusVendorBody.healthComponent.healthFraction:P1}"
+                        : "; no SPEX found");
+                    break;
+                case "goolake":
+                    // Every Elder Lemurian master, so the elemental ones' real names can be checked.
+                    List<string> names = new List<string>();
+                    foreach (CharacterBody body in CharacterBody.readOnlyInstancesList)
+                    {
+                        if (body && body.master && body.master.name.Contains("LemurianBruiser"))
+                        {
+                            names.Add(body.master.name + (IsElementalLemurian(body) ? " (elemental)" : ""));
+                        }
+                    }
+                    text.Append(names.Count > 0 ? "; Elder Lemurian masters: " + string.Join(", ", names) : "; no Elder Lemurians");
+                    break;
+                case "shipgraveyard":
+                    BodyIndex egg = Lookup(ref eggIndex, "VultureEggBody");
+                    int eggs = 0;
+                    foreach (CharacterBody body in CharacterBody.readOnlyInstancesList)
+                    {
+                        if (body && egg != BodyIndex.None && body.bodyIndex == egg) eggs++;
+                    }
+                    bool awu = FindBody(Lookup(ref awuIndex, "SuperRoboBallBossBody"));
+                    text.Append($"; {eggs} Vulture Eggs left, Alloy Worship Unit {(awu ? "alive" : "not here")}");
+                    break;
+            }
+            return text.ToString();
+        }
+
+        private static BodyIndex Lookup(ref BodyIndex cached, string bodyName)
+        {
+            if (cached == BodyIndex.None)
+            {
+                cached = BodyCatalog.FindBodyIndex(bodyName);
+            }
+            return cached;
+        }
+
+        private static CharacterBody FindBody(BodyIndex index)
+        {
+            if (index == BodyIndex.None) return null;
+
+            ReadOnlyCollection<CharacterBody> bodies = CharacterBody.readOnlyInstancesList;
+            for (int i = 0; i < bodies.Count; i++)
+            {
+                if (bodies[i] && bodies[i].bodyIndex == index) return bodies[i];
             }
             return null;
         }

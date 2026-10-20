@@ -20,7 +20,7 @@ namespace KarmaWarnings
             KarmaTriggers.CollectLotsOfItems, KarmaTriggers.GetEliteAffix, KarmaTriggers.PledgeLoyalty
         };
 
-        // What the player would end up holding, finishing "Picking this up gives you ...".
+        // What the player would end up holding, finishing "when you take this and have ...".
         public static readonly string[] Phrases =
         {
             "3 Lunar items", "3 Meal items", "5 Hallowed items", "50 items", "an Elite Aspect", "Beads of Fealty"

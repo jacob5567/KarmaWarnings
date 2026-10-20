@@ -37,8 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <!-- The mod icon in the Risk Of Options menu. Embedded so it works however the mod was installed. The icon isn't chosen yet, so this is skipped until the file exists. -->
-    <EmbeddedResource Include="thunderstore/icon.png" LogicalName="KarmaWarnings.icon.png" Condition="Exists('thunderstore/icon.png')" />
+    <!-- The mod icon in the Risk Of Options menu. Embedded so it works however the mod was installed. -->
+    <EmbeddedResource Include="thunderstore/icon.png" LogicalName="KarmaWarnings.icon.png" />
   </ItemGroup>
 
   <!-- Exposes the version to code as PluginVersionInfo.Version, for the BepInPlugin attribute. -->

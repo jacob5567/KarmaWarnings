@@ -26,7 +26,7 @@ You aim at the portal. Where a portal is matched by the stage it leads to, any e
 | when you kill the Solus Heart | The Decrypted Portal (DLC3) |
 | when you kill the Solus Wing | Any exit whose prefab leads to Solutional Haunt (DLC3) |
 | when you kill False Son | A green portal whose stage for the next stage number is Prime Meridian |
-| when you start a new loop | A scene exit or a charged teleporter on stage 5, when none of the messages above applies. Not on the moon, and not in Prismatic Trials. |
+| when you start a new loop | On stage 5, when none of the messages above applies: a scene exit, or a teleporter that hasn't been started yet or is fully charged. Not a Primordial Teleporter aligned with the moon, not while a teleporter charges, not on the moon, and not in Prismatic Trials. |
 
 ## Interactables
 

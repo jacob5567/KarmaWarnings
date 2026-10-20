@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Renders the KarmaWarnings icon (256x256). The game's Karma blue, drawn by hand, with a hint of a warning.
 
-Usage: make_icon.py --option 1..5 [out.png]
-With no output path it overwrites thunderstore/icon.png. Jacob chose option 3.
+Usage: make_icon.py [--option 1..5] [out.png]
+The option defaults to 3, the one Jacob chose. With no output path it overwrites thunderstore/icon.png.
 """
 import math
 import os
@@ -223,7 +223,7 @@ def main(argv):
     if args:
         out = args[0]
     if option not in OPTIONS:
-        sys.exit("Pass --option 1..%d: the icon hasn't been chosen yet." % len(OPTIONS))
+        sys.exit("--option must be 1..%d." % len(OPTIONS))
     render(option).save(out)
 
 

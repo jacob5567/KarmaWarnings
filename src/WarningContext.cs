@@ -16,7 +16,8 @@ namespace KarmaWarnings
         public int StageOrder;
         public readonly AimedTarget Target = new AimedTarget();
 
-        private int sceneHandle = -1;
+        // Changes whenever a stage loads, even the same stage again on a later loop.
+        public int SceneHandle { get; private set; } = -1;
 
         // Stage 5 is the last of a loop: leaving it starts the next one. The game doesn't count leaving the moon, and
         // Prismatic Trials never loop.
@@ -30,9 +31,9 @@ namespace KarmaWarnings
             Karma = karma;
 
             int handle = SceneManager.GetActiveScene().handle;
-            if (handle != sceneHandle)
+            if (handle != SceneHandle)
             {
-                sceneHandle = handle;
+                SceneHandle = handle;
                 Scene = SceneCatalog.GetSceneDefForCurrentScene();
                 SceneName = Scene ? Scene.cachedName : "";
                 StageOrder = Scene ? Scene.stageOrder : 0;

@@ -11,20 +11,20 @@ A client-side Risk of Rain 2 mod that warns you **before** you do something that
 A short banner right above the crosshair: "Increases Karma", with a line under it saying what you're about to do. Examples of where it appears:
 
 - **Entering a stage you can't leave without the milestone:** Void Fields, Gilded Coast, Bulwark's Ambry, Prime Meridian, Soulbound Threshold, Terminal Lucidity and the Solus fights. The Shrine of Descent and the teleporter it turns into a catastrophe teleporter warn about the +1 for surviving it, and the Ritual Portal warns separately about the +1 for killing the Anima Harvester.
-- **Interacting:** the preplaced Legendary Chests in Abyssal Depths, Sundered Grove and Repurposed Crater, and a Halcyon Shrine that is close to filling.
+- **Interacting:** the preplaced Legendary Chests in Abyssal Depths, Sundered Grove and Repurposed Crater, and a Halcyon Shrine, which also tells you when to cash out to avoid the Karma.
 - **Fights where timing matters:** killing a teleporter boss at 10% charge or less, and hurting the Newt in the Bazaar or SPEX in the Computational Exchange.
 - **Items:** a pickup, shop terminal or item choice that would reach 3 Lunar items, 3 Meal items, 5 Hallowed items, 50 items, or an Elite Aspect.
-- **Looping:** leaving the fifth stage of a loop.
+- **Looping:** leaving the fifth stage of a loop for the next stage, but not for the moon.
 
-[MESSAGES.md](MESSAGES.md) lists every message and when it appears.
+[MESSAGES.md](https://github.com/jacob5567/KarmaWarnings/blob/main/MESSAGES.md) lists every message and when it appears.
 
-Nothing is shown when Karma is turned off for the run, when you're already at 8 Karma, or when you've already earned that milestone and it only counts once. If you join a run in progress and the mod can't tell, it still warns.
+Nothing is shown when Karma is turned off for the run, when you're already at 8 Karma, or when you've already earned that milestone and it only counts once. When the mod can't tell whether a milestone is earned, it still warns.
 
 Some things can't be warned about in time: an Elite Aspect picked up by walking over it with an empty equipment slot, and damage to the Newt or SPEX that is already past the point of no return.
 
 ## Notes
 
-- Warnings use the game's own rules, read from the game's code. A few things couldn't be confirmed without playing, so expect to see some mistakes: which green portal leads to Prime Meridian, the Solus fights' portals, the elemental Elder Lemurians' names, whether leaving the moon's stage counts as a loop, whether clients can see a Halcyon Shrine's charge, and the vulture egg count.
+- Warnings use the game's own rules, read from the game's code. A few things couldn't be confirmed without playing, so expect to see some mistakes: which green portal leads to Prime Meridian, the Solus fights' portals, the elemental Elder Lemurians' names, which way the Primordial Teleporter is aligned as seen by a client, and the vulture egg count.
 - Not warned about yet: an open item-choice panel (Command, Void potentials), a ready CHEF meal, and items still falling out of a chest.
 - Not warned about on purpose: the Obelisk in A Moment, Fractured (the run ends right after), and item thresholds crossed by monsters or drones, such as with Artifact of Evolution.
 - Item warnings skip shop terminals showing "?", so they never give away what's inside, and terminals paid for with items.
@@ -40,9 +40,9 @@ Edit `BepInEx/config/sevenstack.KarmaWarnings.cfg`, or use the in-game settings 
 | Setting | Default | Description |
 |---|---|---|
 | `Enabled` | true | Show a warning above the crosshair before you do something that raises your Karma. |
-| `DebugLogging` | false | Log extra information about what the mod detects, and enable the dump key. |
+| `DebugLogging` | false | Enable the dump key, which logs the Karma state and what the mod sees around you. |
 | `DebugAlwaysShow` | false | Show a warning even when nothing would raise your Karma, for testing. |
-| `DumpKey` | F8 | With `DebugLogging` on, press to log the current Karma state and what the warning banner is doing. |
+| `DumpKey` | F8 | With `DebugLogging` on, press to log the Karma state, what the warning banner shows, the exit you're aiming at, and what the fight checks for this stage see. |
 
 ## Building
 
@@ -52,4 +52,4 @@ The version lives in `thunderstore/manifest.json`. To release, bump it, run `./b
 
 ## License
 
-[GPL-3.0](LICENSE)
+[GPL-3.0](https://github.com/jacob5567/KarmaWarnings/blob/main/LICENSE)
