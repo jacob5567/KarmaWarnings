@@ -13,17 +13,20 @@ namespace KarmaWarnings
         private const int HallowedThreshold = 5;
         private const int LotsThreshold = 50;
 
-        // Index = bit position in the masks the item detector builds.
+        // Index = bit position in the masks the item detector builds. The Meal trigger has two rules, so it appears twice:
+        // 3 Meal items, or Sauteed Worms on its own. An id that appears twice still adds its Karma once.
         public static readonly string[] Ids =
         {
             KarmaTriggers.CollectLunarItems, KarmaTriggers.CollectMealItems, KarmaTriggers.CollectHallowedItems,
-            KarmaTriggers.CollectLotsOfItems, KarmaTriggers.GetEliteAffix, KarmaTriggers.PledgeLoyalty
+            KarmaTriggers.CollectLotsOfItems, KarmaTriggers.GetEliteAffix, KarmaTriggers.PledgeLoyalty,
+            KarmaTriggers.CollectMealItems
         };
 
-        // What the player would end up holding, finishing "when you take this and have ...".
+        // What the player would end up holding, finishing "when you take this and have ...". Item names are the game's.
         public static readonly string[] Phrases =
         {
-            "3 Lunar items", "3 Meal items", "5 Hallowed items", "50 items", "an Elite Aspect", "Beads of Fealty"
+            "3 Lunar items", "3 Meal items", "5 Hallowed items", "50 items", "an Elite Aspect", "Beads of Fealty",
+            "Saut\u00e9ed Worms"
         };
 
         public static int IndexOf(string id)
@@ -42,6 +45,7 @@ namespace KarmaWarnings
             switch (index)
             {
                 case 0: return LunarCount(inventory, null, default) >= LunarThreshold;
+                // The whole Meal trigger, both its rules: IndexOf finds the Meal id at 1, never at 6.
                 case 1:
                     return inventory.GetTotalItemCountOfTier(ItemTier.FoodTier) >= MealThreshold
                         || inventory.GetItemCountPermanent(DLC3Content.Items.WyrmOnHit) > 0;
@@ -60,9 +64,8 @@ namespace KarmaWarnings
             {
                 case 0: return LunarCount(inventory, def, pickup) >= LunarThreshold;
                 case 1:
-                    return (item && item.tier == ItemTier.FoodTier
-                            && inventory.GetTotalItemCountOfTier(ItemTier.FoodTier) + 1 >= MealThreshold)
-                        || def.itemIndex == DLC3Content.Items.WyrmOnHit.itemIndex;
+                    return item && item.tier == ItemTier.FoodTier
+                        && inventory.GetTotalItemCountOfTier(ItemTier.FoodTier) + 1 >= MealThreshold;
                 case 2:
                     return item && item.tier == ItemTier.Cursed
                         && inventory.GetTotalItemCountOfTier(ItemTier.Cursed) + 1 >= HallowedThreshold;
@@ -74,6 +77,7 @@ namespace KarmaWarnings
                         && IsEliteAspect(EquipmentCatalog.GetEquipmentDef(def.equipmentIndex));
                 case 5:
                     return def.itemIndex == RoR2Content.Items.LunarTrinket.itemIndex && !pickup.isRental;
+                case 6: return def.itemIndex == DLC3Content.Items.WyrmOnHit.itemIndex;
                 default: return false;
             }
         }

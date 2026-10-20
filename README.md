@@ -13,7 +13,7 @@ A short banner right above the crosshair: "Increases Karma", with a line under i
 - **Entering a stage you can't leave without the milestone:** Void Fields, Gilded Coast, Bulwark's Ambry, Prime Meridian, Soulbound Threshold, Terminal Lucidity and the Solus fights. The Shrine of Descent and the teleporter it turns into a catastrophe teleporter warn about the +1 for surviving it, and the Ritual Portal warns separately about the +1 for killing the Anima Harvester.
 - **Interacting:** the preplaced Legendary Chests in Abyssal Depths, Sundered Grove and Repurposed Crater, and a Halcyon Shrine, which also tells you when to cash out to avoid the Karma.
 - **Fights where timing matters:** killing a teleporter boss at 10% charge or less, and hurting the Newt in the Bazaar or SPEX in the Computational Exchange.
-- **Items:** a pickup, shop terminal or item choice that would reach 3 Lunar items, 3 Meal items, 5 Hallowed items, 50 items, or an Elite Aspect.
+- **Items:** a pickup, shop terminal or item choice that would reach 3 Lunar items, 3 Meal items, 5 Hallowed items, 50 items, an Elite Aspect, or Sautéed Worms.
 - **Looping:** leaving the fifth stage of a loop, including for the moon.
 
 [MESSAGES.md](https://github.com/jacob5567/KarmaWarnings/blob/main/MESSAGES.md) lists every message and when it appears.
@@ -27,7 +27,7 @@ Some things can't be warned about in time: an Elite Aspect picked up by walking 
 - Warnings use the game's own rules, read from the game's code. A few things couldn't be confirmed without playing, so expect to see some mistakes: which green portal leads to Prime Meridian, the Solus fights' portals, the elemental Elder Lemurians' names, which way a client sees the Primordial Teleporter aligned, and the vulture egg count.
 - Not warned about yet: an open item-choice panel (Command, Void potentials), a ready CHEF meal, and items still falling out of a chest.
 - Not warned about on purpose: the Obelisk in A Moment, Fractured (the run ends right after), and item thresholds crossed by monsters or drones, such as with Artifact of Evolution.
-- Item warnings skip shop terminals showing "?", so they never give away what's inside, and terminals paid for with items.
+- Item warnings at shop terminals only show when you can afford the item, and skip terminals paid for with items. A terminal showing "?" still warns, so the warning can hint at what's inside.
 
 ## Multiplayer
 

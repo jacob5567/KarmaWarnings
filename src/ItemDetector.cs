@@ -12,7 +12,7 @@ namespace KarmaWarnings
     internal sealed class ItemDetector : IWarningDetector
     {
         // How close a pickup has to be to count as one the player is about to walk over.
-        private const float TouchRange = 3f;
+        private const float TouchRange = 5f;
 
         private readonly Dictionary<int, string> textByMask = new Dictionary<int, string>();
 
@@ -27,7 +27,7 @@ namespace KarmaWarnings
             int amount = 0;
             for (int i = 0; i < ItemRules.Ids.Length; i++)
             {
-                if ((mask & (1 << i)) != 0)
+                if ((mask & (1 << i)) != 0 && !CountedEarlier(mask, i))
                 {
                     amount += context.AmountFor(ItemRules.Ids[i]);
                 }
@@ -39,8 +39,19 @@ namespace KarmaWarnings
             return true;
         }
 
-        // The pickup, or the shop terminal's item, that the player is aiming at. A hidden terminal ("?") is skipped so the
-        // warning doesn't give away what's inside, and so is one paid for with items, where the player gives one up.
+        // True when an earlier set bit is for the same trigger, whose Karma is already counted.
+        private static bool CountedEarlier(int mask, int index)
+        {
+            for (int j = 0; j < index; j++)
+            {
+                if ((mask & (1 << j)) != 0 && ItemRules.Ids[j] == ItemRules.Ids[index]) return true;
+            }
+            return false;
+        }
+
+        // The pickup, or the shop terminal's item, that the player is aiming at. A terminal warns only when the player can
+        // afford it right now, and not when it's paid for with items, where the player gives one up. A hidden terminal
+        // ("?") still warns: its item is synced to every player, only its display is hidden.
         private static int AimedMask(WarningContext context)
         {
             AimedTarget target = context.Target;
@@ -50,11 +61,19 @@ namespace KarmaWarnings
             }
 
             PurchaseInteraction purchase = target.Purchase;
-            if (target.Shop && purchase && purchase.available && !target.Shop.pickupIndexIsHidden && IsPaidWithMoney(purchase))
+            if (target.Shop && purchase && purchase.available && IsPaidWithMoney(purchase) && CanAfford(context, purchase))
             {
                 return MaskFor(context, target.Shop.CurrentPickup());
             }
             return 0;
+        }
+
+        // The game's own check before a purchase goes through. It only reads synced state: the player's money or lunar
+        // coins, the terminal's cost, and the cost adjustments (Longstanding Solitude, free unlocks).
+        private static bool CanAfford(WarningContext context, PurchaseInteraction purchase)
+        {
+            Interactor interactor = context.Body.GetComponent<Interactor>();
+            return interactor && purchase.CanBeAffordedByInteractor(interactor);
         }
 
         private static bool IsPaidWithMoney(PurchaseInteraction purchase)

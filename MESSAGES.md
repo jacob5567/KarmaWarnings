@@ -25,7 +25,7 @@ You aim at the portal. Where a portal is matched by the stage it leads to, any e
 | when you kill the secret boss | The Veil of Memory portal |
 | when you kill the Solus Heart | The Decrypted Portal (DLC3) |
 | when you kill the Solus Wing | Any exit whose prefab leads to Solutional Haunt (DLC3) |
-| when you kill False Son | A green portal whose stage for the next stage number is Prime Meridian |
+| when you kill False Son | A green portal whose stage for the next stage number is Prime Meridian: the one on Treeborn Colony or Golden Dieback |
 | when you start a new loop | On stage 5, when none of the messages above applies: a scene exit, or a teleporter that hasn't been started yet or is fully charged. Not while a teleporter charges, not on the moon, and not in Prismatic Trials. |
 | when you go to the moon | The same, at a Primordial Teleporter aligned with the moon. Leaving stage 5 for the moon also starts a new loop. |
 
@@ -58,13 +58,14 @@ No aiming needed unless stated.
 The message is **when you take this and have …** followed by the phrases that apply, joined with "and", for example "when you take this and have 3 Lunar items and Beads of Fealty". It appears when taking the item would push you over a threshold, in any of these cases:
 
 - You're aiming at a pickup on the ground.
-- You're aiming at a shop terminal that is available, isn't showing "?", and is paid for with money or lunar coins.
-- A pickup within 3 m would be taken just by walking over it.
+- You're aiming at a shop terminal that is available, is paid for with money or lunar coins, and that you can afford right now. A terminal showing "?" counts too.
+- A pickup within 5 m would be taken just by walking over it.
 
 | Phrase | Taking the item would give you |
 |---|---|
 | 3 Lunar items | 3 Lunar items in total. A Lunar equipment counts as one, and temporary and rental copies count. |
-| 3 Meal items | 3 Meal items, or any Wyrm-on-hit item (DLC3) |
+| 3 Meal items | 3 Meal items (DLC3) |
+| Sautéed Worms | Sautéed Worms (DLC3), which counts for the Meal milestone on its own |
 | 5 Hallowed items | 5 Hallowed items (DLC4) |
 | 50 items | 50 permanent items. Rentals, temporary items, and hidden or consumed ones don't count. |
 | an Elite Aspect | An Elite Aspect equipment |
