@@ -28,6 +28,10 @@ namespace KarmaWarnings
 
         public static IReadOnlyList<KarmaWarningsController> Instances => instances;
 
+        // What the banner shows as of the last frame. Read by the KarmaWarnings.Tests plugin.
+        public bool Showing => showing;
+        public KarmaWarning Current => current;
+
         private void Awake()
         {
             hud = GetComponent<HUD>();
