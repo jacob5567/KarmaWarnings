@@ -144,17 +144,20 @@ def option_2(art):
 
 
 def option_3(art):
-    """A crescent moon inside the Karma ring, with an alert badge."""
-    cx, cy, r = 122, 134, 92
+    """A crescent moon inside the Karma ring, with an alert badge. The ring and the crescent's own outline share the
+    icon's center; the badge sits off to the top right and isn't part of the centering."""
+    cx, cy, r = SIZE // 2, SIZE // 2, 92
     karma_ring(art, cx, cy, r, 14)
-    crescent = ImageChops.subtract(disc(cx, cy, 54), disc(cx + 20, cy - 8, 46))
+    crescent = centered_on(ImageChops.subtract(disc(cx, cy, 54), disc(cx + 20, cy - 8, 46)), cx, cy)
     glow(art, crescent, KARMA_GLOW, 6, 0.9)
     paint(art, outline(crescent, 2), KARMA_DEEP)
     paint(art, crescent, MOON)
-    badge = disc(196, 66, 34)
+    bx, by = cx + 74, cy - 68
+    badge = disc(bx, by, 34)
     paint(art, outline(badge, 3), ALERT_DARK)
     paint(art, badge, ALERT)
-    paint(art, exclamation(196, 46, 40, 9), ALERT_DARK)
+    paint(art, exclamation(bx, by - 20, 40, 9), ALERT_DARK)
+    return True
 
 
 def option_4(art):
@@ -192,6 +195,14 @@ def option_5(art):
 OPTIONS = {1: option_1, 2: option_2, 3: option_3, 4: option_4, 5: option_5}
 
 
+def centered_on(mask, cx, cy):
+    """Moves a mask so the middle of its bounding box is at (cx, cy)."""
+    box = mask.getbbox()
+    if not box:
+        return mask
+    return ImageChops.offset(mask, s(cx) - (box[0] + box[2]) // 2, s(cy) - (box[1] + box[3]) // 2)
+
+
 def centered(art):
     """Moves the artwork so the middle of its solid parts, not its glow, is the middle of the icon."""
     solid_bits = art.getchannel("A").point(lambda v: 255 if v > 200 else 0)
@@ -205,8 +216,9 @@ def centered(art):
 
 def render(option):
     art = Image.new("RGBA", (W, W), (0, 0, 0, 0))
-    OPTIONS[option](art)
-    art = centered(art)
+    # An option that places its own subject on the center returns True; the rest are centered as a whole.
+    if not OPTIONS[option](art):
+        art = centered(art)
     img = Image.new("RGBA", (W, W), BACKGROUND)
     img.alpha_composite(art)
     return img.resize((SIZE, SIZE), Image.LANCZOS)
