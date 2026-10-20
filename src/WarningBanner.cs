@@ -9,7 +9,9 @@ namespace KarmaWarnings
     // saying what the action is. Fades in and out; it never pulses or flashes.
     internal sealed class WarningBanner : MonoBehaviour
     {
-        private const float FadeDuration = 0.15f;
+        // Appears quickly so the warning is up before the player acts; leaves at a calmer pace.
+        private const float FadeInDuration = 0.075f;
+        private const float FadeOutDuration = 0.15f;
         private const float Width = 1000f;
         // The main container is centered on the crosshair. This clears the crosshair's own graphics, in UI pixels.
         private const float CrosshairClearance = 60f;
@@ -112,7 +114,8 @@ namespace KarmaWarnings
 
         private void LateUpdate()
         {
-            canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, visible ? 1f : 0f, Time.unscaledDeltaTime / FadeDuration);
+            float duration = visible ? FadeInDuration : FadeOutDuration;
+            canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, visible ? 1f : 0f, Time.unscaledDeltaTime / duration);
         }
     }
 }
