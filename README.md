@@ -24,7 +24,7 @@ Some things can't be warned about in time: an Elite Aspect picked up by walking 
 
 ## Notes
 
-- Warnings use the game's own rules, read from the game's code. A few things couldn't be confirmed without playing, so expect to see some mistakes: which green portal leads to Prime Meridian, the Solus fights' portals, the elemental Elder Lemurians' names, which way a client sees the Primordial Teleporter aligned, and the vulture egg count.
+- Warnings use the game's own rules, read from the game's code. A few things couldn't be confirmed without playing, so expect to see some mistakes: which green portal leads to Prime Meridian, the Solus fights' portals, which way a client sees the Primordial Teleporter aligned, and the vulture egg count.
 - Not warned about yet: an open item-choice panel (Command, Void potentials), a ready CHEF meal, and items still falling out of a chest.
 - Not warned about on purpose: the Obelisk in A Moment, Fractured (the run ends right after), and item thresholds crossed by monsters or drones, such as with Artifact of Evolution.
 - Item warnings at shop terminals only show when you can afford the item, and skip terminals paid for with items. A terminal showing "?" still warns, so the warning can hint at what's inside.

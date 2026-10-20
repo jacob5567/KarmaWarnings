@@ -7,7 +7,9 @@ using UnityEngine;
 namespace KarmaWarnings
 {
     // Warns during fights where the Karma comes from how it ends: a teleporter boss killed before the teleporter is 10%
-    // charged, the Newt and SPEX kicking the player out, the elemental Elder Lemurians, and the Alloy Worship Unit.
+    // charged, the Newt and SPEX kicking the player out, the elemental Elder Lemurians, and the Alloy Worship Unit. The
+    // optional bosses (the Elder Lemurians, the Alloy Worship Unit and its eggs) only warn while the player aims at them,
+    // since leaving them alone avoids the Karma.
     //
     // Which stage the player is in gates the body scans, so they only run in the few stages that need them.
     internal sealed class CombatDetector : IWarningDetector
@@ -99,8 +101,8 @@ namespace KarmaWarnings
         }
 
         // The two elemental Elder Lemurians in the hidden chamber have their own masters, placed in the scene rather than
-        // spawned from the catalog. The names are from the scene's spawn setup and haven't been checked in game, so the
-        // F8 dump lists the Elder Lemurian masters it finds.
+        // spawned from the catalog: LemurianBruiserMasterFire and LemurianBruiserMasterIce, as seen in game. The F8 dump
+        // lists the Elder Lemurian masters it finds.
         private bool ElementalLemurians(WarningContext context, out KarmaWarning warning)
         {
             warning = default;
@@ -110,18 +112,18 @@ namespace KarmaWarnings
                 elementalByBody.Clear();
             }
 
-            if (!AnyElementalLemurian()) return false;
+            if (!IsAimingAtElementalLemurian(context.Body)) return false;
 
             return context.TryMake("when you kill both elemental Elder Lemurians", WarningPriority.Combat, LemurianIds, false,
                 out warning);
         }
 
-        private bool AnyElementalLemurian()
+        private bool IsAimingAtElementalLemurian(CharacterBody player)
         {
             ReadOnlyCollection<CharacterBody> bodies = CharacterBody.readOnlyInstancesList;
             for (int i = 0; i < bodies.Count; i++)
             {
-                if (bodies[i] && IsElementalLemurian(bodies[i])) return true;
+                if (bodies[i] && IsElementalLemurian(bodies[i]) && IsAimingAt(player, bodies[i])) return true;
             }
             return false;
         }
@@ -140,16 +142,18 @@ namespace KarmaWarnings
 
         private static bool IsElementalLemurianMaster(string name)
         {
-            return name.StartsWith("LemurianBruiserFireMaster") || name.StartsWith("LemurianBruiserIceMaster");
+            return name.StartsWith("LemurianBruiserMasterFire") || name.StartsWith("LemurianBruiserMasterIce");
         }
 
         // Destroying six Vulture Eggs summons the Alloy Worship Unit, and killing it adds Karma.
         private bool AlloyWorshipUnit(WarningContext context, out KarmaWarning warning)
         {
             warning = default;
-            if (FindBody(Lookup(ref awuIndex, "SuperRoboBallBossBody")))
+            CharacterBody awu = FindBody(Lookup(ref awuIndex, "SuperRoboBallBossBody"));
+            if (awu)
             {
-                return context.TryMake("when you kill the Alloy Worship Unit", WarningPriority.Combat, AwuIds, false, out warning);
+                return IsAimingAt(context.Body, awu)
+                    && context.TryMake("when you kill the Alloy Worship Unit", WarningPriority.Combat, AwuIds, false, out warning);
             }
 
             return IsAimingAtEgg(context.Body) && context.TryMake("when you kill the Alloy Worship Unit that six eggs summon",
