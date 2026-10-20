@@ -4,7 +4,7 @@ using RoR2;
 namespace KarmaWarnings
 {
     // Warns while the player aims at a portal that leads to a stage they can't leave without a Karma milestone, and at
-    // any way from the last stage of a loop to the next stage.
+    // any way out of the last stage of a loop.
     //
     // The portal dialer on Sky Meadow and Helminth Hatchery (the Compound Generator and its laptop) gets no warning:
     // only the portal it opens is a commitment.
@@ -123,12 +123,13 @@ namespace KarmaWarnings
                 && LoopWarning(context, out warning);
         }
 
-        // A teleporter that will take the player to the next stage: one that hasn't been started yet or is fully charged,
-        // and isn't a Primordial Teleporter aligned with the moon. While it charges, the player is already committed.
+        // A teleporter the player can still decide to leave by: one that hasn't been started yet or is fully charged. While
+        // it charges, the player is already committed. A Primordial Teleporter aligned with the moon counts too: leaving
+        // stage 5 starts a loop wherever it leads (LoopWarning words it differently).
         private static bool IsLeavingTeleporter(AimedTarget target)
         {
             TeleporterInteraction teleporter = target.Teleporter;
-            return target.IsTeleporter && (teleporter.isIdle || teleporter.isCharged) && !target.AimedAtMoon;
+            return target.IsTeleporter && (teleporter.isIdle || teleporter.isCharged);
         }
 
         // One line for the F8 dump: what the aimed-at exit is and where it leads.
@@ -166,10 +167,13 @@ namespace KarmaWarnings
             warning = default;
             if (!context.Applies(KarmaTriggers.LoopAtLeastOnce)) return false;
 
+            // A Primordial Teleporter aligned with the moon still starts the loop, but the player thinks of it as going to
+            // the moon, so the message names that.
+            AimedTarget target = context.Target;
             warning = new KarmaWarning
             {
                 Amount = context.AmountFor(KarmaTriggers.LoopAtLeastOnce),
-                Text = "when you start a new loop",
+                Text = target.IsTeleporter && target.AimedAtMoon ? "when you go to the moon" : "when you start a new loop",
                 Priority = WarningPriority.Loop
             };
             return warning.Amount > 0;
