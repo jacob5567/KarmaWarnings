@@ -213,8 +213,8 @@ namespace KarmaWarnings
             if (context.StageOrder <= 5) return context.StageOrder + 1;
 
             Run run = Run.instance;
-            if (!run || run.ruleBook.stageOrder != StageOrder.Normal || context.LastLoopStageOrder == 0) return 0;
-            return context.LastLoopStageOrder % 5 + 1;
+            if (!run || run.ruleBook.stageOrder != StageOrder.Normal || WarningContext.LastLoopStageOrder == 0) return 0;
+            return WarningContext.LastLoopStageOrder % 5 + 1;
         }
     }
 }

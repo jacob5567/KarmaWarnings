@@ -15,7 +15,8 @@ namespace KarmaWarnings
         public string SceneName = "";
         public int StageOrder;
         // The order of the last stage of a loop (1 to 5) the player was on, kept through hidden realms. 0 before the first.
-        public int LastLoopStageOrder;
+        // Static, since each stage builds a new HUD and with it a new context.
+        public static int LastLoopStageOrder;
         public readonly AimedTarget Target = new AimedTarget();
 
         // Changes whenever a stage loads, even the same stage again on a later loop.
