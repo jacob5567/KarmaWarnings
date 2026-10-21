@@ -14,6 +14,8 @@ namespace KarmaWarnings
         public SceneDef Scene;
         public string SceneName = "";
         public int StageOrder;
+        // The order of the last stage of a loop (1 to 5) the player was on, kept through hidden realms. 0 before the first.
+        public int LastLoopStageOrder;
         public readonly AimedTarget Target = new AimedTarget();
 
         // Changes whenever a stage loads, even the same stage again on a later loop.
@@ -37,6 +39,10 @@ namespace KarmaWarnings
                 Scene = SceneCatalog.GetSceneDefForCurrentScene();
                 SceneName = Scene ? Scene.cachedName : "";
                 StageOrder = Scene ? Scene.stageOrder : 0;
+                if (Scene && Scene.sceneType == SceneType.Stage && StageOrder >= 1 && StageOrder <= 5)
+                {
+                    LastLoopStageOrder = StageOrder;
+                }
             }
 
             Target.Refresh(aimed);

@@ -25,7 +25,7 @@ You aim at the portal. Where a portal is matched by the stage it leads to, any e
 | when you kill the secret boss | The Veil of Memory portal |
 | when you kill the Solus Heart | The Decrypted Portal (DLC3) |
 | when you kill the Solus Wing | Any exit whose prefab leads to Solutional Haunt (DLC3) |
-| when you kill False Son | A green portal whose stage for the next stage number is Prime Meridian: the one on Treeborn Colony or Golden Dieback |
+| when you kill False Son | A green portal that leads to Prime Meridian: one on stage 3 (Treeborn Colony or Golden Dieback), 4 or 5, or one in a hidden realm such as Gilded Coast when you entered it from stage 3, 4 or 5. With the Random stage order rule a hidden realm's green portal always warns, since only the host knows where it leads. |
 | when you start a new loop | On stage 5, when none of the messages above applies: a scene exit, or a teleporter that hasn't been started yet or is fully charged. Not while a teleporter charges, not on the moon, and not in Prismatic Trials. |
 | when you go to the moon | The same, at a Primordial Teleporter aligned with the moon. Leaving stage 5 for the moon also starts a new loop. |
 

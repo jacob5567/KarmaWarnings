@@ -179,22 +179,42 @@ namespace KarmaWarnings
             return warning.Amount > 0;
         }
 
-        // The stage a portal leads to, when the prefab says. A green portal picks the alternate for the next stage number.
+        // The stage a portal leads to, when the prefab says. A green portal picks the alternate for the next stage's order,
+        // as SceneExitController.TryGetAlternateScene does, and goes to its default destination (Prime Meridian) when that
+        // order has none: so from stages 3, 4 and 5 too.
         private static string DestinationName(WarningContext context, SceneExitController exit)
         {
             SceneDef scene = exit.destinationScene;
             if (exit.isAlternatePath)
             {
-                switch (context.StageOrder + 1)
+                SceneDef alternate = null;
+                switch (NextStageOrder(context))
                 {
-                    case 1: scene = exit.tier1AlternateDestinationScene; break;
-                    case 2: scene = exit.tier2AlternateDestinationScene; break;
-                    case 3: scene = exit.tier3AlternateDestinationScene; break;
-                    case 4: scene = exit.tier4AlternateDestinationScene; break;
-                    case 5: scene = exit.tier5AlternateDestinationScene; break;
+                    case 1: alternate = exit.tier1AlternateDestinationScene; break;
+                    case 2: alternate = exit.tier2AlternateDestinationScene; break;
+                    case 3: alternate = exit.tier3AlternateDestinationScene; break;
+                    case 4: alternate = exit.tier4AlternateDestinationScene; break;
+                    case 5: alternate = exit.tier5AlternateDestinationScene; break;
+                }
+                if (alternate)
+                {
+                    scene = alternate;
                 }
             }
             return scene ? scene.cachedName : null;
+        }
+
+        // The order the game uses for a green portal. On a stage of a loop it's this stage's order + 1. Elsewhere (a hidden
+        // realm such as Gilded Coast, whose stageOrder is 96) the game reads Run.nextStageScene, which clients can't. Hidden
+        // realms have no teleporter to pick a new one, so it's still the stage after the last stage of a loop. With the
+        // Random stage order rule it could be any stage, so 0 is returned and the default destination is assumed.
+        private static int NextStageOrder(WarningContext context)
+        {
+            if (context.StageOrder <= 5) return context.StageOrder + 1;
+
+            Run run = Run.instance;
+            if (!run || run.ruleBook.stageOrder != StageOrder.Normal || context.LastLoopStageOrder == 0) return 0;
+            return context.LastLoopStageOrder % 5 + 1;
         }
     }
 }
