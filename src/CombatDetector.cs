@@ -42,6 +42,11 @@ namespace KarmaWarnings
         private readonly Dictionary<CharacterBody, bool> elementalByBody = new Dictionary<CharacterBody, bool>();
         private int elementalSceneHandle = -1;
 
+        // Once the Alloy Worship Unit has been seen the eggs stop warning, even after it dies. The encounter state that
+        // counts the eggs only runs on the server, so a client can only tell the fight began from the boss's body.
+        private int awuSceneHandle = -1;
+        private bool awuSeen;
+
         public bool TryGetWarning(WarningContext context, out KarmaWarning warning)
         {
             switch (context.SceneName)
@@ -149,14 +154,21 @@ namespace KarmaWarnings
         private bool AlloyWorshipUnit(WarningContext context, out KarmaWarning warning)
         {
             warning = default;
+            if (awuSceneHandle != context.SceneHandle)
+            {
+                awuSceneHandle = context.SceneHandle;
+                awuSeen = false;
+            }
+
             CharacterBody awu = FindBody(Lookup(ref awuIndex, "SuperRoboBallBossBody"));
+            if (awu) awuSeen = true;
             if (awu)
             {
                 return IsAimingAt(context.Body, awu)
                     && context.TryMake("when you kill the Alloy Worship Unit", WarningPriority.Combat, AwuIds, false, out warning);
             }
 
-            return IsAimingAtEgg(context.Body) && context.TryMake("when you kill the Alloy Worship Unit that six eggs summon",
+            return !awuSeen && IsAimingAtEgg(context.Body) && context.TryMake("when you kill the Alloy Worship Unit that six eggs summon",
                 WarningPriority.Combat, AwuIds, false, out warning);
         }
 

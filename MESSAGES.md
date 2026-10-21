@@ -51,7 +51,7 @@ No aiming needed unless stated.
 | when SPEX kicks you out | SPEX is awake, and either at full health with you aiming at it, or between 90% and 100% health (DLC3) |
 | when you kill both elemental Elder Lemurians | In Abandoned Aqueduct, while you're aiming at one of the hidden chamber's Fire or Ice Elder Lemurians |
 | when you kill the Alloy Worship Unit | In Siren's Call, while you're aiming at the Alloy Worship Unit |
-| when you kill the Alloy Worship Unit that six eggs summon | In Siren's Call, before it appears, while you're aiming at a Vulture Egg |
+| when you kill the Alloy Worship Unit that six eggs summon | In Siren's Call, until the Alloy Worship Unit has appeared, while you're aiming at a Vulture Egg |
 
 ## Items
 
