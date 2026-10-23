@@ -62,6 +62,12 @@ namespace KarmaWarnings
             banner.canvasGroup = group;
             banner.headline = CreateText(rect, "Headline", HeadlineFontSize);
             banner.subline = CreateText(rect, "Subline", SublineFontSize);
+            // RiskUI keeps the crosshair centered, so only the font changes there.
+            if (RiskUICompat.IsRiskUIHud(hud))
+            {
+                RiskUICompat.ApplyFont(hud, banner.headline);
+                RiskUICompat.ApplyFont(hud, banner.subline);
+            }
             banner.subline.gameObject.SetActive(false);
             return banner;
         }
