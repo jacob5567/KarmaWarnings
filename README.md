@@ -26,6 +26,7 @@ Some things can't be warned about in time: an Elite Aspect picked up by walking 
 - Not warned about yet: an open item-choice panel (Command, Void potentials), a ready CHEF meal, and items still falling out of a chest.
 - Not warned about on purpose: the Obelisk in A Moment, Fractured (the run ends right after), and item thresholds crossed by monsters or drones, such as with Artifact of Evolution.
 - Item warnings at shop terminals only show when you can afford the item, and skip terminals paid for with items. A terminal showing "?" still warns, so the warning can hint at what's inside.
+- With [RiskUI](https://thunderstore.io/package/Bubbet/RiskUI/) installed and enabled, the warning uses RiskUI's font. If you turn RiskUI on or off, the change applies from the next stage, the same as for RiskUI's own HUD.
 
 ## Multiplayer
 

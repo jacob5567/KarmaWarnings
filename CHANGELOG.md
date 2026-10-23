@@ -1,3 +1,7 @@
+## 1.1.0
+
+- With [RiskUI](https://thunderstore.io/package/Bubbet/RiskUI/) installed and enabled, the warning uses RiskUI's font.
+
 ## 1.0.1
 
 - Vulture Eggs stop warning once the Alloy Worship Unit has appeared, since the fight has already started.
