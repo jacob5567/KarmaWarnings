@@ -3,10 +3,18 @@ using UnityEngine;
 
 namespace KarmaWarnings
 {
+    internal enum MithrixPreviewMode
+    {
+        Off,
+        Banner,
+        Sidebar,
+    }
+
     // All config entries, bound from the plugin's config file.
     internal sealed class PluginConfig
     {
         public readonly ConfigEntry<bool> Enabled;
+        public readonly ConfigEntry<MithrixPreviewMode> MithrixPreview;
 
         public readonly ConfigEntry<bool> DebugLogging;
         public readonly ConfigEntry<bool> DebugAlwaysShow;
@@ -16,6 +24,8 @@ namespace KarmaWarnings
         {
             Enabled = config.Bind("General", "Enabled", true,
                 "Show a warning above the crosshair before you do something that raises your Karma.");
+            MithrixPreview = config.Bind("General", "MithrixPreview", MithrixPreviewMode.Off,
+                "Also show what the Karma increase does to Mithrix. Banner: a short line per Karma level under the warning. Sidebar: a panel with more detail under the objectives.");
 
             DebugLogging = config.Bind("Debug", "DebugLogging", false,
                 "Enable the dump key, which logs the Karma state and what the mod sees around you.");

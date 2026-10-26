@@ -7,7 +7,7 @@ namespace KarmaWarnings
 {
     // One per HUD. Each frame it checks that a warning can matter (the mod is on, the local player has a body, Karma is
     // on for the run and below its maximum), asks each detector for a warning, and shows the most important one on the
-    // banner.
+    // banner, with what it does to Mithrix when MithrixPreview is on.
     //
     // Read-only: see KarmaGate for the game methods that must never be called.
     internal sealed class KarmaWarningsController : MonoBehaviour
@@ -21,10 +21,13 @@ namespace KarmaWarnings
 
         private HUD hud;
         private WarningBanner banner;
+        private MithrixPanel mithrixPanel;
         private CharacterBody driverBody;
         private InteractionDriver driver;
         private bool showing;
         private KarmaWarning current;
+        // Karma before the action the current warning is about.
+        private int currentKarma;
 
         public static IReadOnlyList<KarmaWarningsController> Instances => instances;
 
@@ -56,27 +59,47 @@ namespace KarmaWarnings
                 banner = WarningBanner.Create(hud);
             }
 
-            showing = TryGetWarning(out current);
+            showing = TryGetWarning(out current, out currentKarma);
+            // Not on a warning without the headline: that one is advice on how to avoid the Karma.
+            MithrixPreviewMode preview = current.HideHeadline ? MithrixPreviewMode.Off : KarmaWarningsPlugin.Settings.MithrixPreview.Value;
+            int toKarma = Mathf.Min(currentKarma + current.Amount, KarmaManager.maxKarma);
             if (showing)
             {
-                banner.Show(current);
+                banner.Show(current, preview == MithrixPreviewMode.Banner ? MithrixEffects.BannerText(currentKarma, toKarma) : null);
             }
             else
             {
                 banner.Hide();
             }
+
+            if (showing && preview == MithrixPreviewMode.Sidebar)
+            {
+                // Made on first use, so nothing is added to the HUD while the setting is off.
+                if (!mithrixPanel)
+                {
+                    mithrixPanel = MithrixPanel.Create(hud);
+                }
+                mithrixPanel.Show(currentKarma, toKarma);
+            }
+            else if (mithrixPanel)
+            {
+                mithrixPanel.Hide();
+            }
         }
 
-        private bool TryGetWarning(out KarmaWarning warning)
+        private bool TryGetWarning(out KarmaWarning warning, out int karma)
         {
             warning = default;
+            karma = 0;
             PluginConfig settings = KarmaWarningsPlugin.Settings;
             if (!settings.Enabled.Value) return false;
 
-            if (TryFindDetectorWarning(out warning)) return true;
+            if (TryFindDetectorWarning(out warning, out karma)) return true;
 
             if (settings.DebugAlwaysShow.Value)
             {
+                // Karma is 0 when it's off, and at the maximum the preview has no levels to show.
+                KarmaGate.TryGetKarma(out karma);
                 // The lowest priority, so it never hides a real warning. It skips the Karma gates, so it shows with Karma off
                 // or at the maximum.
                 warning = new KarmaWarning { Amount = 1, Text = "when DebugAlwaysShow is on", Priority = WarningPriority.Debug };
@@ -85,13 +108,14 @@ namespace KarmaWarnings
             return false;
         }
 
-        private bool TryFindDetectorWarning(out KarmaWarning warning)
+        private bool TryFindDetectorWarning(out KarmaWarning warning, out int karma)
         {
             warning = default;
 
             // The local player's own body, not whoever the HUD is spectating: only your own actions matter.
             CharacterBody body = hud.localUserViewer?.cachedBody;
-            if (!body || !KarmaGate.TryGetKarma(out int karma)) return false;
+            karma = 0;
+            if (!body || !KarmaGate.TryGetKarma(out karma)) return false;
 
             // Reads the target the game is already outlining. Never call InteractionDriver.FindBestInteractableObject: it
             // resets the driver's check cooldown.

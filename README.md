@@ -16,6 +16,8 @@ A short banner right above the crosshair: "Increases Karma", with a line under i
 
 [MESSAGES.md](https://github.com/jacob5567/KarmaWarnings/blob/main/MESSAGES.md) lists every message and when it appears.
 
+The `MithrixPreview` setting can also show what the Karma would do to Mithrix: a short line per level under the warning ("Mithrix at Karma 4: landings call a meteor storm"), or a panel with more detail on the right, under the objectives. With [LookingGlass](https://thunderstore.io/package/DropPod/LookingGlass/) installed, the panel sits below its stats panel.
+
 Nothing is shown when Karma is turned off for the run, when you're already at 8 Karma, or when you've already earned that milestone and it only counts once. When the mod can't tell whether a milestone is earned, it still warns.
 
 Some things can't be warned about in time: an Elite Aspect picked up by walking over it with an empty equipment slot, and damage to the Newt or SPEX that is already past the point of no return.
@@ -39,6 +41,7 @@ Edit `BepInEx/config/sevenstack.KarmaWarnings.cfg`, or use the in-game settings 
 | Setting | Default | Description |
 |---|---|---|
 | `Enabled` | true | Show a warning above the crosshair before you do something that raises your Karma. |
+| `MithrixPreview` | Off | Also show what the Karma increase does to Mithrix. `Banner`: a short line per Karma level under the warning. `Sidebar`: a panel with more detail under the objectives. |
 | `DebugLogging` | false | Enable the dump key, which logs the Karma state and what the mod sees around you. |
 | `DebugAlwaysShow` | false | Show a warning even when nothing would raise your Karma, for testing. |
 | `DumpKey` | F8 | With `DebugLogging` on, press to log the Karma state, what the warning banner shows, the exit you're aiming at, and what the fight checks for this stage see. |

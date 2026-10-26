@@ -28,6 +28,7 @@ namespace KarmaWarnings
             }
 
             ModSettingsManager.AddOption(new CheckBoxOption(settings.Enabled));
+            ModSettingsManager.AddOption(new ChoiceOption(settings.MithrixPreview));
 
             // The options menu groups these under a "Debug" header, named after their config section.
             ModSettingsManager.AddOption(new CheckBoxOption(settings.DebugLogging));

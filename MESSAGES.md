@@ -71,6 +71,23 @@ The message is **when you take this and have …** followed by the phrases that 
 | an Elite Aspect | An Elite Aspect equipment |
 | Beads of Fealty | Beads of Fealty, but not a rental |
 
+## Mithrix preview
+
+With `MithrixPreview` set to `Banner`, each warning gets one dimmer line per Karma level it would add: "Mithrix at Karma 4: landings call a meteor storm". A jump of more than 3 levels shows the first two, then "Mithrix at Karma 6–8: 3 more levels of changes". With `Sidebar`, a panel under the objectives shows each level's title with a few details instead. Only the first 3 levels of a jump get details. Neither shows with the Halcyon Shrine's "Interact again" advice, which has no headline.
+
+| Karma | Banner line | Sidebar title |
+|---|---|---|
+| 1 | shields himself after every 10% of health lost | Damage shell |
+| 2 | +30% speed; leap bombs, gravity pull, dash spikes | +30% speed |
+| 3 | hammer and needle attacks leave Lunar Ruin spikes | Lunar Ruin spikes |
+| 4 | landings call a meteor storm | Meteor storm |
+| 5 | summons Karmic Spires that slow and shoot you | Karmic Spires |
+| 6 | halved cooldowns, elite monsters, new phase 4 attacks | Halved cooldowns |
+| 7 | +1% damage, nothing new | Damage only |
+| 8 | +50% max health | +50% max health |
+
+The sidebar details are in `src/MithrixEffects.cs`. Every level also adds +1% damage.
+
 ## Debug
 
 | Message | Scenario |

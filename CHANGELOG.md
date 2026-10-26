@@ -1,3 +1,7 @@
+## Unreleased
+
+- New `MithrixPreview` setting (off by default): shows what the Karma increase does to Mithrix, as a short line under the warning or as a panel under the objectives. The panel sits below [LookingGlass](https://thunderstore.io/package/DropPod/LookingGlass/)'s stats panel.
+
 ## 1.1.0
 
 - With [RiskUI](https://thunderstore.io/package/Bubbet/RiskUI/) installed and enabled, the warning uses RiskUI's font.
