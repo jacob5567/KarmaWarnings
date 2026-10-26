@@ -50,6 +50,8 @@ Edit `BepInEx/config/sevenstack.KarmaWarnings.cfg`, or use the in-game settings 
 
 Requires the .NET 8 SDK, a local Risk of Rain 2 install, and [Risk Of Options](https://thunderstore.io/package/Rune580/Risk_Of_Options/) in the r2modman profile (it is only referenced for the settings menu). `dotnet build -c Release` builds the plugin and copies it into the r2modman Default profile; add `-p:CopyToProfile=false` to skip the copy. `./build.sh` also writes the Thunderstore zip to `dist/`. The default game and profile paths are in `Directory.Build.props`; override them on the command line or in a `Directory.Build.props.user` file.
 
+`tests/` holds in-game tests, run with [ModTestRunner](https://github.com/jacob5567/ModTestRunner). ModTestRunner builds them into a separate dev-only plugin, which is never packaged: clone it and run `./build-tests.sh <path to this repo>` there. Then start a run with DebugToolkit installed, and enter `mod_test --mod KarmaWarnings` in the console.
+
 The version lives in `thunderstore/manifest.json`. To release, bump it, run `./build.sh`, and publish a GitHub release tagged `v<version>` with the zip attached. The publish workflow then uploads that zip to Thunderstore.
 
 ## License
