@@ -38,6 +38,12 @@ namespace KarmaWarnings
         private int shownFrom = -1;
         private int shownTo = -1;
 
+        // Read by the KarmaWarnings.Tests plugin.
+        public bool Visible => visible;
+        public bool TakesSpace => !layoutElement.ignoreLayout;
+        public string Header => header.text;
+        public string Body => body.text;
+
         public static MithrixPanel Create(HUD hud)
         {
             ObjectivePanelController objectives = hud.GetComponentInChildren<ObjectivePanelController>(true);

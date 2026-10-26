@@ -34,6 +34,9 @@ namespace KarmaWarnings
         // What the banner shows as of the last frame. Read by the KarmaWarnings.Tests plugin.
         public bool Showing => showing;
         public KarmaWarning Current => current;
+        // What the Mithrix preview shows, for the same plugin. The panel is null until the sidebar is first used.
+        public WarningBanner Banner => banner;
+        public MithrixPanel MithrixPanel => mithrixPanel;
 
         private void Awake()
         {

@@ -35,6 +35,9 @@ namespace KarmaWarnings
         private TextMeshProUGUI mithrix;
         private bool visible;
 
+        // The Mithrix lines as last shown, or null when they're left out. Read by the KarmaWarnings.Tests plugin.
+        public string MithrixText => mithrix.gameObject.activeSelf ? mithrix.text : null;
+
         public static WarningBanner Create(HUD hud)
         {
             Transform container = hud.mainContainer.transform;
