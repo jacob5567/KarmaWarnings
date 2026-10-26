@@ -1,6 +1,6 @@
 {
   "name": "KarmaWarnings",
-  "version_number": "1.1.0",
+  "version_number": "1.2.0",
   "website_url": "https://github.com/jacob5567/KarmaWarnings",
   "description": "Warns you with a banner above the crosshair before you do something that raises your Karma. Client-side.",
   "dependencies": [

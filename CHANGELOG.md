@@ -1,4 +1,4 @@
-## Unreleased
+## 1.2.0
 
 - New `MithrixPreview` setting (off by default): shows what the Karma increase does to Mithrix, as a short line under the warning or as a panel under the objectives. The panel sits below [LookingGlass](https://thunderstore.io/package/DropPod/LookingGlass/)'s stats panel.
 
